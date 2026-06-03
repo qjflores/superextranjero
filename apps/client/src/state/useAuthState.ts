@@ -1,23 +1,81 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
+import apiClient from '../api/client.js';
 
-interface AuthState {
+export interface AuthState {
   userId?: string;
+  email?: string;
   token?: string;
   isAuthenticated: boolean;
+  isLoading: boolean;
+  error?: string;
 }
 
 export const useAuthState = () => {
   const [auth, setAuth] = useState<AuthState>({
     isAuthenticated: false,
+    isLoading: false,
   });
 
-  const login = (userId: string, token: string) => {
-    setAuth({ userId, token, isAuthenticated: true });
-  };
+  const register = useCallback(
+    async (email: string, password: string) => {
+      setAuth((prev) => ({ ...prev, isLoading: true, error: undefined }));
+      try {
+        const data = await apiClient.register(email, password);
+        apiClient.setToken(data.token);
+        setAuth({
+          userId: data.userId,
+          email: data.email,
+          token: data.token,
+          isAuthenticated: true,
+          isLoading: false,
+        });
+        return data;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'Registration failed';
+        setAuth((prev) => ({ ...prev, isLoading: false, error: message }));
+        throw error;
+      }
+    },
+    []
+  );
 
-  const logout = () => {
-    setAuth({ isAuthenticated: false });
-  };
+  const login = useCallback(
+    async (email: string, password: string) => {
+      setAuth((prev) => ({ ...prev, isLoading: true, error: undefined }));
+      try {
+        const data = await apiClient.login(email, password);
+        apiClient.setToken(data.token);
+        setAuth({
+          userId: data.userId,
+          email: data.email,
+          token: data.token,
+          isAuthenticated: true,
+          isLoading: false,
+        });
+        return data;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'Login failed';
+        setAuth((prev) => ({ ...prev, isLoading: false, error: message }));
+        throw error;
+      }
+    },
+    []
+  );
 
-  return { auth, login, logout };
+  const logout = useCallback(() => {
+    apiClient.clearToken();
+    setAuth({ isAuthenticated: false, isLoading: false });
+  }, []);
+
+  const clearError = useCallback(() => {
+    setAuth((prev) => ({ ...prev, error: undefined }));
+  }, []);
+
+  return {
+    auth,
+    register,
+    login,
+    logout,
+    clearError,
+  };
 };
