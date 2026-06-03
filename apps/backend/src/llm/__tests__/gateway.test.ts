@@ -1,8 +1,4 @@
-import {
-  LLMGateway,
-  Capability,
-  GuardrailError,
-} from '../index.js';
+import { LLMGateway, Capability, GuardrailError } from '../index.js';
 import { MockProvider } from '../providers/mock.js';
 
 describe('LLMGateway', () => {

@@ -31,18 +31,14 @@ export class Guardrails {
     if (this.violations.length === 0) return 0;
     const recentWindow = 3600000; // 1 hour
     const now = Date.now();
-    const recent = this.violations.filter(
-      (v) => now - v.timestamp.getTime() < recentWindow
-    );
+    const recent = this.violations.filter((v) => now - v.timestamp.getTime() < recentWindow);
     return recent.length;
   }
 
   // Clear old violations
   clearOldViolations(ageMs: number = 3600000): void {
     const now = Date.now();
-    this.violations = this.violations.filter(
-      (v) => now - v.timestamp.getTime() < ageMs
-    );
+    this.violations = this.violations.filter((v) => now - v.timestamp.getTime() < ageMs);
   }
 
   getViolations(): GuardrailViolation[] {

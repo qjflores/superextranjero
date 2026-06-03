@@ -24,20 +24,22 @@
     "clean": "find . -type d -name dist -o -name build -o -name .next | xargs rm -rf"
   },
   "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^20.0.0",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",
     "eslint": "^9.0.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-react": "^7.32.0",
     "eslint-plugin-react-native": "^4.0.0",
-    "prettier": "^3.0.0",
-    "typescript": "^5.3.0",
     "husky": "^9.0.0",
-    "lint-staged": "^15.0.0",
     "jest": "^29.0.0",
+    "lint-staged": "^15.0.0",
+    "prettier": "^3.0.0",
     "ts-jest": "^29.0.0",
-    "@types/node": "^20.0.0",
-    "ts-node": "^10.9.0"
+    "ts-node": "^10.9.0",
+    "typescript": "^5.3.0"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": "eslint --fix",

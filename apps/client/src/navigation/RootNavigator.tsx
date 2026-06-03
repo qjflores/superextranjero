@@ -34,11 +34,7 @@ export const RootNavigator: React.FC = () => {
         ) : !auth.email ? (
           // Loading state
           <Stack.Group>
-            <Stack.Screen
-              name="Loading"
-              component={() => null}
-              options={{ headerShown: false }}
-            />
+            <Stack.Screen name="Loading" component={() => null} options={{ headerShown: false }} />
           </Stack.Group>
         ) : (
           // Authenticated Stack
@@ -51,11 +47,7 @@ export const RootNavigator: React.FC = () => {
                 headerLeft: () => null,
               }}
             />
-            <Stack.Screen
-              name="Home"
-              component={HomeScreen}
-              options={{ title: 'Home' }}
-            />
+            <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Home' }} />
           </Stack.Group>
         )}
       </Stack.Navigator>

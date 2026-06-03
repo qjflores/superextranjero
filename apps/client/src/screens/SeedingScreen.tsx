@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,13 +7,10 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
-import { useAuth } from '../state/AuthContext.js';
 import { useSeedingState } from '../state/useSeedingState.js';
 
 export const SeedingScreen: React.FC<{ onComplete?: () => void }> = ({ onComplete }) => {
-  const { auth } = useAuth();
   const { seeding, seedPool, checkStatus } = useSeedingState();
-  const [startTime, setStartTime] = useState<number | null>(null);
 
   useEffect(() => {
     initializeSeeding();
@@ -26,7 +23,6 @@ export const SeedingScreen: React.FC<{ onComplete?: () => void }> = ({ onComplet
 
       if (!seeding.isComplete) {
         // Start seeding process
-        setStartTime(Date.now());
         await seedPool('en', 20);
       }
     } catch (error) {
@@ -62,9 +58,7 @@ export const SeedingScreen: React.FC<{ onComplete?: () => void }> = ({ onComplet
               <Text style={styles.statLabel}>Verbs Learned</Text>
             </View>
             <View style={styles.stat}>
-              <Text style={styles.statNumber}>
-                {seeding.completedScenarios}
-              </Text>
+              <Text style={styles.statNumber}>{seeding.completedScenarios}</Text>
               <Text style={styles.statLabel}>Scenarios</Text>
             </View>
           </View>
@@ -82,10 +76,7 @@ export const SeedingScreen: React.FC<{ onComplete?: () => void }> = ({ onComplet
             </View>
           )}
 
-          <TouchableOpacity
-            style={[styles.button, styles.primaryButton]}
-            onPress={handleComplete}
-          >
+          <TouchableOpacity style={[styles.button, styles.primaryButton]} onPress={handleComplete}>
             <Text style={styles.buttonText}>Continue to App</Text>
           </TouchableOpacity>
         </View>
@@ -99,9 +90,7 @@ export const SeedingScreen: React.FC<{ onComplete?: () => void }> = ({ onComplet
       <View style={styles.seedingContainer}>
         <View style={styles.header}>
           <Text style={styles.title}>Learning Spanish Verbs</Text>
-          <Text style={styles.subtitle}>
-            Building your verb pool in recognition mode
-          </Text>
+          <Text style={styles.subtitle}>Building your verb pool in recognition mode</Text>
         </View>
 
         {seeding.isLoading ? (
@@ -115,22 +104,16 @@ export const SeedingScreen: React.FC<{ onComplete?: () => void }> = ({ onComplet
         <View style={styles.progressSection}>
           <View style={styles.progressHeader}>
             <Text style={styles.progressLabel}>Progress</Text>
-            <Text style={styles.progressPercent}>
-              {Math.round(completionPercentage)}%
-            </Text>
+            <Text style={styles.progressPercent}>{Math.round(completionPercentage)}%</Text>
           </View>
           <View style={styles.progressContainer}>
-            <View
-              style={[
-                styles.progressBar,
-                { width: `${completionPercentage}%` },
-              ]}
-            />
+            <View style={[styles.progressBar, { width: `${completionPercentage}%` }]} />
           </View>
 
           {seeding.completedScenarios > 0 && (
             <Text style={styles.progressText}>
-              {seeding.completedScenarios} scenario{seeding.completedScenarios !== 1 ? 's' : ''} recognized
+              {seeding.completedScenarios} scenario{seeding.completedScenarios !== 1 ? 's' : ''}{' '}
+              recognized
             </Text>
           )}
         </View>
@@ -146,9 +129,7 @@ export const SeedingScreen: React.FC<{ onComplete?: () => void }> = ({ onComplet
                 </View>
               ))}
               {seeding.seededVerbs.length > 10 && (
-                <Text style={styles.moreText}>
-                  +{seeding.seededVerbs.length - 10} more
-                </Text>
+                <Text style={styles.moreText}>+{seeding.seededVerbs.length - 10} more</Text>
               )}
             </View>
           </View>
@@ -171,8 +152,8 @@ export const SeedingScreen: React.FC<{ onComplete?: () => void }> = ({ onComplet
         <View style={styles.infoContainer}>
           <Text style={styles.infoTitle}>Recognition Mode</Text>
           <Text style={styles.infoText}>
-            You're learning through recognition, not production. Each verb is presented in a
-            natural context. Your brain learns by matching the verb to its meaning.
+            You're learning through recognition, not production. Each verb is presented in a natural
+            context. Your brain learns by matching the verb to its meaning.
           </Text>
         </View>
       </View>

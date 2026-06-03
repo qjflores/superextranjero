@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Interface Contracts — Survival Spanish</title>
-<!--
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interface Contracts — Survival Spanish</title>
+    <!--
   ============================================================
   INTERFACE CONTRACTS  ·  Survival Spanish
   Capability-level boundaries for agents. Each contract names a
@@ -19,457 +19,1022 @@
   Machine-readable copy embedded at end of <body>.
   ============================================================
 -->
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,800&family=Spline+Sans+Mono:wght@400;500;600&display=swap');
-  :root{
-    --ink:#f4ece0; --ink-dim:#b9ad9a; --ink-faint:#7d735f;
-    --bg:#13110d; --bg-raised:#1b1813; --bg-code:#100e0a; --line:#2e2820;
-    --amber:#e8a33d; --amber-soft:#f0c277; --terra:#d2603a;
-    --sage:#9bae7c; --crimson:#c64b3c; --sky:#7fa6c4; --violet:#b196c4;
-  }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  html{scroll-behavior:smooth;}
-  body{
-    background:
-      radial-gradient(120% 80% at 80% -10%, rgba(232,163,61,.10), transparent 55%),
-      radial-gradient(90% 70% at -10% 110%, rgba(210,96,58,.08), transparent 50%),
-      var(--bg);
-    color:var(--ink); font-family:'Fraunces', Georgia, serif; line-height:1.6;
-    -webkit-font-smoothing:antialiased; min-height:100vh; padding:clamp(1.2rem,4vw,4rem);
-  }
-  body::before{content:""; position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.035;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
-  .wrap{position:relative; z-index:1; max-width:880px; margin:0 auto;}
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,800&family=Spline+Sans+Mono:wght@400;500;600&display=swap');
+      :root {
+        --ink: #f4ece0;
+        --ink-dim: #b9ad9a;
+        --ink-faint: #7d735f;
+        --bg: #13110d;
+        --bg-raised: #1b1813;
+        --bg-code: #100e0a;
+        --line: #2e2820;
+        --amber: #e8a33d;
+        --amber-soft: #f0c277;
+        --terra: #d2603a;
+        --sage: #9bae7c;
+        --crimson: #c64b3c;
+        --sky: #7fa6c4;
+        --violet: #b196c4;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        background:
+          radial-gradient(120% 80% at 80% -10%, rgba(232, 163, 61, 0.1), transparent 55%),
+          radial-gradient(90% 70% at -10% 110%, rgba(210, 96, 58, 0.08), transparent 50%), var(--bg);
+        color: var(--ink);
+        font-family: 'Fraunces', Georgia, serif;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+        padding: clamp(1.2rem, 4vw, 4rem);
+      }
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        opacity: 0.035;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      }
+      .wrap {
+        position: relative;
+        z-index: 1;
+        max-width: 880px;
+        margin: 0 auto;
+      }
 
-  .masthead{border-bottom:1px solid var(--line); padding-bottom:1.6rem; margin-bottom:2.4rem; opacity:0; animation:rise .8s ease forwards;}
-  .kicker{font-family:'Spline Sans Mono',monospace; font-size:.72rem; letter-spacing:.32em; text-transform:uppercase; color:var(--amber); margin-bottom:1.4rem; display:flex; gap:.9rem; flex-wrap:wrap; align-items:center;}
-  .kicker .dot{width:6px; height:6px; border-radius:50%; background:var(--terra);}
-  h1{font-size:clamp(2.4rem,6.5vw,4rem); font-weight:800; line-height:1; letter-spacing:-.02em;}
-  h1 em{font-style:italic; color:var(--amber-soft); font-weight:500;}
-  .standfirst{margin-top:1.3rem; font-size:clamp(1.02rem,2.2vw,1.24rem); color:var(--ink-dim); max-width:64ch;}
-  .meta{margin-top:1.5rem; font-family:'Spline Sans Mono',monospace; font-size:.72rem; color:var(--ink-faint); letter-spacing:.04em;}
+      .masthead {
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 1.6rem;
+        margin-bottom: 2.4rem;
+        opacity: 0;
+        animation: rise 0.8s ease forwards;
+      }
+      .kicker {
+        font-family: 'Spline Sans Mono', monospace;
+        font-size: 0.72rem;
+        letter-spacing: 0.32em;
+        text-transform: uppercase;
+        color: var(--amber);
+        margin-bottom: 1.4rem;
+        display: flex;
+        gap: 0.9rem;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .kicker .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--terra);
+      }
+      h1 {
+        font-size: clamp(2.4rem, 6.5vw, 4rem);
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.02em;
+      }
+      h1 em {
+        font-style: italic;
+        color: var(--amber-soft);
+        font-weight: 500;
+      }
+      .standfirst {
+        margin-top: 1.3rem;
+        font-size: clamp(1.02rem, 2.2vw, 1.24rem);
+        color: var(--ink-dim);
+        max-width: 64ch;
+      }
+      .meta {
+        margin-top: 1.5rem;
+        font-family: 'Spline Sans Mono', monospace;
+        font-size: 0.72rem;
+        color: var(--ink-faint);
+        letter-spacing: 0.04em;
+      }
 
-  /* how agents use this */
-  .uses{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:.7rem; margin:2rem 0 2.8rem;}
-  .use{background:var(--bg-raised); border:1px solid var(--line); border-radius:10px; padding:.85rem 1rem; opacity:0; animation:rise .7s ease forwards;}
-  .use .n{font-family:'Spline Sans Mono',monospace; font-size:.68rem; color:var(--amber); letter-spacing:.1em;}
-  .use .t{color:var(--ink); font-weight:600; font-size:.98rem; margin-top:.2rem;}
-  .use .d{color:var(--ink-faint); font-size:.85rem; margin-top:.15rem;}
+      /* how agents use this */
+      .uses {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 0.7rem;
+        margin: 2rem 0 2.8rem;
+      }
+      .use {
+        background: var(--bg-raised);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 0.85rem 1rem;
+        opacity: 0;
+        animation: rise 0.7s ease forwards;
+      }
+      .use .n {
+        font-family: 'Spline Sans Mono', monospace;
+        font-size: 0.68rem;
+        color: var(--amber);
+        letter-spacing: 0.1em;
+      }
+      .use .t {
+        color: var(--ink);
+        font-weight: 600;
+        font-size: 0.98rem;
+        margin-top: 0.2rem;
+      }
+      .use .d {
+        color: var(--ink-faint);
+        font-size: 0.85rem;
+        margin-top: 0.15rem;
+      }
 
-  /* pipeline strip */
-  .pipe{font-family:'Spline Sans Mono',monospace; font-size:.78rem; color:var(--ink-dim); background:var(--bg-code); border:1px solid var(--line); border-radius:10px; padding:1rem 1.1rem; margin-bottom:3rem; line-height:1.9; overflow-x:auto;}
-  .pipe b{color:var(--amber);} .pipe .arr{color:var(--terra); padding:0 .35rem;} .pipe .loop{color:var(--sage);}
+      /* pipeline strip */
+      .pipe {
+        font-family: 'Spline Sans Mono', monospace;
+        font-size: 0.78rem;
+        color: var(--ink-dim);
+        background: var(--bg-code);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 1rem 1.1rem;
+        margin-bottom: 3rem;
+        line-height: 1.9;
+        overflow-x: auto;
+      }
+      .pipe b {
+        color: var(--amber);
+      }
+      .pipe .arr {
+        color: var(--terra);
+        padding: 0 0.35rem;
+      }
+      .pipe .loop {
+        color: var(--sage);
+      }
 
-  /* contract card */
-  .contract{background:var(--bg-raised); border:1px solid var(--line); border-radius:14px; margin-bottom:1.5rem; overflow:hidden; opacity:0; animation:rise .8s ease forwards;}
-  .c-top{padding:1.2rem 1.4rem .9rem; border-bottom:1px solid var(--line);}
-  .c-id{display:flex; align-items:center; gap:.7rem; flex-wrap:wrap;}
-  .c-id .name{font-family:'Spline Sans Mono',monospace; font-size:1.12rem; font-weight:600; color:var(--amber-soft);}
-  .badge{font-family:'Spline Sans Mono',monospace; font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; padding:.2rem .55rem; border-radius:5px;}
-  .b-v1{background:rgba(155,174,124,.16); color:var(--sage);}
-  .b-v2{background:rgba(127,166,196,.16); color:var(--sky);}
-  .b-gap{background:rgba(210,96,58,.18); color:var(--terra);}
-  .b-stakes{background:rgba(198,75,60,.16); color:var(--crimson);}
-  .c-purpose{color:var(--ink-dim); font-size:1rem; margin-top:.6rem;}
-  .c-owner{font-family:'Spline Sans Mono',monospace; font-size:.7rem; color:var(--ink-faint); margin-top:.5rem; letter-spacing:.03em;}
+      /* contract card */
+      .contract {
+        background: var(--bg-raised);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+        opacity: 0;
+        animation: rise 0.8s ease forwards;
+      }
+      .c-top {
+        padding: 1.2rem 1.4rem 0.9rem;
+        border-bottom: 1px solid var(--line);
+      }
+      .c-id {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        flex-wrap: wrap;
+      }
+      .c-id .name {
+        font-family: 'Spline Sans Mono', monospace;
+        font-size: 1.12rem;
+        font-weight: 600;
+        color: var(--amber-soft);
+      }
+      .badge {
+        font-family: 'Spline Sans Mono', monospace;
+        font-size: 0.62rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 0.2rem 0.55rem;
+        border-radius: 5px;
+      }
+      .b-v1 {
+        background: rgba(155, 174, 124, 0.16);
+        color: var(--sage);
+      }
+      .b-v2 {
+        background: rgba(127, 166, 196, 0.16);
+        color: var(--sky);
+      }
+      .b-gap {
+        background: rgba(210, 96, 58, 0.18);
+        color: var(--terra);
+      }
+      .b-stakes {
+        background: rgba(198, 75, 60, 0.16);
+        color: var(--crimson);
+      }
+      .c-purpose {
+        color: var(--ink-dim);
+        font-size: 1rem;
+        margin-top: 0.6rem;
+      }
+      .c-owner {
+        font-family: 'Spline Sans Mono', monospace;
+        font-size: 0.7rem;
+        color: var(--ink-faint);
+        margin-top: 0.5rem;
+        letter-spacing: 0.03em;
+      }
 
-  .c-body{padding:.4rem 1.4rem 1.3rem;}
-  .field{margin-top:1.1rem;}
-  .field > .lbl{font-family:'Spline Sans Mono',monospace; font-size:.68rem; letter-spacing:.14em; text-transform:uppercase; color:var(--amber); margin-bottom:.5rem; display:flex; align-items:center; gap:.5rem;}
-  .field > .lbl::before{content:""; width:10px; height:1px; background:var(--amber);}
-  pre{background:var(--bg-code); border:1px solid var(--line); border-radius:9px; padding:.85rem 1rem; overflow-x:auto; font-family:'Spline Sans Mono',monospace; font-size:.8rem; line-height:1.65; color:var(--ink-dim);}
-  pre .k{color:var(--sky);} pre .s{color:var(--sage);} pre .c{color:var(--ink-faint); font-style:italic;} pre .r{color:var(--terra);} pre .e{color:var(--amber-soft);}
-  ul.checks{list-style:none; display:flex; flex-direction:column; gap:.4rem;}
-  ul.checks li{padding-left:1.5rem; position:relative; color:var(--ink-dim); font-size:.96rem;}
-  ul.checks li::before{content:"✓"; position:absolute; left:0; color:var(--sage); font-family:'Spline Sans Mono',monospace;}
-  ul.errs{list-style:none; display:flex; flex-direction:column; gap:.4rem;}
-  ul.errs li{padding-left:1.5rem; position:relative; color:var(--ink-dim); font-size:.96rem;}
-  ul.errs li::before{content:"✕"; position:absolute; left:0; color:var(--crimson); font-family:'Spline Sans Mono',monospace;}
-  ul.errs li code, ul.checks li code, .c-purpose code, .pre-cond code{font-family:'Spline Sans Mono',monospace; font-size:.82rem; color:var(--amber-soft); background:rgba(232,163,61,.08); padding:.05rem .35rem; border-radius:4px;}
-  .pre-cond{color:var(--ink-dim); font-size:.96rem;}
-  .invariant{font-family:'Spline Sans Mono',monospace; font-size:.82rem; background:rgba(198,75,60,.07); border:1px dashed rgba(198,75,60,.4); border-radius:8px; padding:.8rem 1rem; color:var(--ink); margin-top:1.1rem;}
-  .invariant b{color:var(--crimson); letter-spacing:.1em; text-transform:uppercase; font-size:.66rem; display:block; margin-bottom:.3rem;}
+      .c-body {
+        padding: 0.4rem 1.4rem 1.3rem;
+      }
+      .field {
+        margin-top: 1.1rem;
+      }
+      .field > .lbl {
+        font-family: 'Spline Sans Mono', monospace;
+        font-size: 0.68rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--amber);
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .field > .lbl::before {
+        content: '';
+        width: 10px;
+        height: 1px;
+        background: var(--amber);
+      }
+      pre {
+        background: var(--bg-code);
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        padding: 0.85rem 1rem;
+        overflow-x: auto;
+        font-family: 'Spline Sans Mono', monospace;
+        font-size: 0.8rem;
+        line-height: 1.65;
+        color: var(--ink-dim);
+      }
+      pre .k {
+        color: var(--sky);
+      }
+      pre .s {
+        color: var(--sage);
+      }
+      pre .c {
+        color: var(--ink-faint);
+        font-style: italic;
+      }
+      pre .r {
+        color: var(--terra);
+      }
+      pre .e {
+        color: var(--amber-soft);
+      }
+      ul.checks {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+      }
+      ul.checks li {
+        padding-left: 1.5rem;
+        position: relative;
+        color: var(--ink-dim);
+        font-size: 0.96rem;
+      }
+      ul.checks li::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        color: var(--sage);
+        font-family: 'Spline Sans Mono', monospace;
+      }
+      ul.errs {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+      }
+      ul.errs li {
+        padding-left: 1.5rem;
+        position: relative;
+        color: var(--ink-dim);
+        font-size: 0.96rem;
+      }
+      ul.errs li::before {
+        content: '✕';
+        position: absolute;
+        left: 0;
+        color: var(--crimson);
+        font-family: 'Spline Sans Mono', monospace;
+      }
+      ul.errs li code,
+      ul.checks li code,
+      .c-purpose code,
+      .pre-cond code {
+        font-family: 'Spline Sans Mono', monospace;
+        font-size: 0.82rem;
+        color: var(--amber-soft);
+        background: rgba(232, 163, 61, 0.08);
+        padding: 0.05rem 0.35rem;
+        border-radius: 4px;
+      }
+      .pre-cond {
+        color: var(--ink-dim);
+        font-size: 0.96rem;
+      }
+      .invariant {
+        font-family: 'Spline Sans Mono', monospace;
+        font-size: 0.82rem;
+        background: rgba(198, 75, 60, 0.07);
+        border: 1px dashed rgba(198, 75, 60, 0.4);
+        border-radius: 8px;
+        padding: 0.8rem 1rem;
+        color: var(--ink);
+        margin-top: 1.1rem;
+      }
+      .invariant b {
+        color: var(--crimson);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        font-size: 0.66rem;
+        display: block;
+        margin-bottom: 0.3rem;
+      }
 
-  h2.group{font-family:'Fraunces'; font-size:1.5rem; font-weight:600; margin:2.6rem 0 1.2rem; color:var(--ink); display:flex; align-items:baseline; gap:.8rem;}
-  h2.group .gn{font-family:'Spline Sans Mono',monospace; font-size:.8rem; color:var(--ink-faint);}
+      h2.group {
+        font-family: 'Fraunces';
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 2.6rem 0 1.2rem;
+        color: var(--ink);
+        display: flex;
+        align-items: baseline;
+        gap: 0.8rem;
+      }
+      h2.group .gn {
+        font-family: 'Spline Sans Mono', monospace;
+        font-size: 0.8rem;
+        color: var(--ink-faint);
+      }
 
-  .principle{font-family:'Spline Sans Mono',monospace; font-size:.82rem; line-height:1.7; background:rgba(232,163,61,.06); border:1px dashed rgba(232,163,61,.35); border-radius:10px; padding:1.1rem 1.3rem; color:var(--amber-soft); margin-top:2rem;}
-  .principle b{color:var(--amber);}
-  footer{border-top:1px solid var(--line); margin-top:2.4rem; padding-top:1.4rem; font-family:'Spline Sans Mono',monospace; font-size:.72rem; color:var(--ink-faint); letter-spacing:.04em; display:flex; justify-content:space-between; flex-wrap:wrap; gap:.6rem;}
+      .principle {
+        font-family: 'Spline Sans Mono', monospace;
+        font-size: 0.82rem;
+        line-height: 1.7;
+        background: rgba(232, 163, 61, 0.06);
+        border: 1px dashed rgba(232, 163, 61, 0.35);
+        border-radius: 10px;
+        padding: 1.1rem 1.3rem;
+        color: var(--amber-soft);
+        margin-top: 2rem;
+      }
+      .principle b {
+        color: var(--amber);
+      }
+      footer {
+        border-top: 1px solid var(--line);
+        margin-top: 2.4rem;
+        padding-top: 1.4rem;
+        font-family: 'Spline Sans Mono', monospace;
+        font-size: 0.72rem;
+        color: var(--ink-faint);
+        letter-spacing: 0.04em;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+      }
 
-  @keyframes rise{from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);}}
-  @media (prefers-reduced-motion:reduce){*{animation:none!important; opacity:1!important;}}
-</style>
-</head>
-<body>
-<div class="wrap">
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation: none !important;
+          opacity: 1 !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="masthead">
+        <div class="kicker">
+          <span>Interface Contracts</span><span class="dot"></span><span>Capability Boundaries</span
+          ><span class="dot"></span><span>Survival Spanish</span>
+        </div>
+        <h1>What the system <em>can do</em>, and how to trust the result.</h1>
+        <p class="standfirst">
+          Capability-level contracts an agent can discover, compose, route, and validate against —
+          each with an API-shaped schema, preconditions, failure modes, and verification checks. The
+          boundaries of the product loop, made explicit.
+        </p>
+        <p class="meta">GROUNDED IN PRD v0.4 · AGENT CHARTER · USER JOURNEYS · es-ES</p>
 
-  <header class="masthead">
-    <div class="kicker"><span>Interface Contracts</span><span class="dot"></span><span>Capability Boundaries</span><span class="dot"></span><span>Survival Spanish</span></div>
-    <h1>What the system <em>can do</em>, and how to trust the result.</h1>
-    <p class="standfirst">Capability-level contracts an agent can discover, compose, route, and validate against — each with an API-shaped schema, preconditions, failure modes, and verification checks. The boundaries of the product loop, made explicit.</p>
-    <p class="meta">GROUNDED IN PRD v0.4 · AGENT CHARTER · USER JOURNEYS · es-ES</p>
+        <div class="uses">
+          <div class="use" style="animation-delay: 0.1s">
+            <div class="n">01</div>
+            <div class="t">Discover</div>
+            <div class="d">Search capabilities, not code.</div>
+          </div>
+          <div class="use" style="animation-delay: 0.16s">
+            <div class="n">02</div>
+            <div class="t">Plan</div>
+            <div class="d">Compose contracts into workflows.</div>
+          </div>
+          <div class="use" style="animation-delay: 0.22s">
+            <div class="n">03</div>
+            <div class="t">Route</div>
+            <div class="d">Find which owner serves it.</div>
+          </div>
+          <div class="use" style="animation-delay: 0.28s">
+            <div class="n">04</div>
+            <div class="t">Validate</div>
+            <div class="d">Check output before proceeding.</div>
+          </div>
+          <div class="use" style="animation-delay: 0.34s">
+            <div class="n">05</div>
+            <div class="t">Generate</div>
+            <div class="d">Source for code, schemas, tests.</div>
+          </div>
+        </div>
 
-    <div class="uses">
-      <div class="use" style="animation-delay:.1s"><div class="n">01</div><div class="t">Discover</div><div class="d">Search capabilities, not code.</div></div>
-      <div class="use" style="animation-delay:.16s"><div class="n">02</div><div class="t">Plan</div><div class="d">Compose contracts into workflows.</div></div>
-      <div class="use" style="animation-delay:.22s"><div class="n">03</div><div class="t">Route</div><div class="d">Find which owner serves it.</div></div>
-      <div class="use" style="animation-delay:.28s"><div class="n">04</div><div class="t">Validate</div><div class="d">Check output before proceeding.</div></div>
-      <div class="use" style="animation-delay:.34s"><div class="n">05</div><div class="t">Generate</div><div class="d">Source for code, schemas, tests.</div></div>
-    </div>
+        <div class="pipe">
+          <span class="c"># the product loop as a contract pipeline</span>
+          <b>seed_verb_pool</b><span class="arr">→</span><b>resolve_scenario</b
+          ><span class="arr">→</span><b>provision_scenario</b><span class="arr">→</span
+          ><b>drill_verbs</b><span class="arr">→</span><b>rehearse_dialogue</b>
+          <span class="arr">→</span><b>grade_mission</b><span class="arr">→</span
+          ><b>update_ladder</b
+          ><span class="loop"> ⟲ update_verb_mastery (feeds next resolve_scenario)</span>
+        </div>
+      </header>
 
-    <div class="pipe">
-<span class="c"># the product loop as a contract pipeline</span>
-<b>seed_verb_pool</b><span class="arr">→</span><b>resolve_scenario</b><span class="arr">→</span><b>provision_scenario</b><span class="arr">→</span><b>drill_verbs</b><span class="arr">→</span><b>rehearse_dialogue</b>
-<span class="arr">→</span><b>grade_mission</b><span class="arr">→</span><b>update_ladder</b><span class="loop"> ⟲ update_verb_mastery (feeds next resolve_scenario)</span>
-    </div>
-  </header>
+      <!-- GROUP A: ENTRY / COLD START -->
+      <h2 class="group"><span class="gn">A</span> Entry &amp; cold-start</h2>
 
-  <!-- GROUP A: ENTRY / COLD START -->
-  <h2 class="group"><span class="gn">A</span> Entry &amp; cold-start</h2>
-
-  <div class="contract" style="animation-delay:.1s">
-    <div class="c-top">
-      <div class="c-id"><span class="name">seed_verb_pool</span><span class="badge b-v1">v1 · §5.0</span><span class="badge b-v1">v1</span></div>
-      <p class="c-purpose">Bootstrap a brand-new user with no verbs through <strong>micro-scenarios</strong> (one-verb situated moments) until the pool can operate a full scenario. Recognition-first; generation is the later destination.</p>
-      <p class="c-owner">OWNER: Learning-Content service · DEPENDS ON: micro-scenario corpus (authored once)</p>
-    </div>
-    <div class="c-body">
-      <div class="field"><span class="lbl">Precondition</span><p class="pre-cond"><code>verb_pool.size &lt; seed_target</code> (default <code>seed_target = 20</code>). If pool already seeded, this capability is a no-op and the agent should route to <code>resolve_scenario</code>.</p></div>
-      <div class="field"><span class="lbl">Invoke · input</span>
-<pre><span class="k">user_id</span>: <span class="s">"usr_..."</span>
+      <div class="contract" style="animation-delay: 0.1s">
+        <div class="c-top">
+          <div class="c-id">
+            <span class="name">seed_verb_pool</span><span class="badge b-v1">v1 · §5.0</span
+            ><span class="badge b-v1">v1</span>
+          </div>
+          <p class="c-purpose">
+            Bootstrap a brand-new user with no verbs through
+            <strong>micro-scenarios</strong> (one-verb situated moments) until the pool can operate
+            a full scenario. Recognition-first; generation is the later destination.
+          </p>
+          <p class="c-owner">
+            OWNER: Learning-Content service · DEPENDS ON: micro-scenario corpus (authored once)
+          </p>
+        </div>
+        <div class="c-body">
+          <div class="field">
+            <span class="lbl">Precondition</span>
+            <p class="pre-cond">
+              <code>verb_pool.size &lt; seed_target</code> (default <code>seed_target = 20</code>).
+              If pool already seeded, this capability is a no-op and the agent should route to
+              <code>resolve_scenario</code>.
+            </p>
+          </div>
+          <div class="field">
+            <span class="lbl">Invoke · input</span>
+            <pre><span class="k">user_id</span>: <span class="s">"usr_..."</span>
 <span class="k">native_language</span>: <span class="s">"en"</span>     <span class="c"># for recognition-mode glosses</span>
-<span class="k">seed_target</span>: <span class="r">20</span>           <span class="c"># core verbs to seed before full scenarios</span></pre></div>
-      <div class="field"><span class="lbl">Verify · output</span>
-<pre><span class="k">seeded_verbs</span>: [<span class="s">"querer"</span>, <span class="s">"tener"</span>, <span class="s">"ir"</span>, ...]
+<span class="k">seed_target</span>: <span class="r">20</span>           <span class="c"># core verbs to seed before full scenarios</span></pre>
+          </div>
+          <div class="field">
+            <span class="lbl">Verify · output</span>
+            <pre><span class="k">seeded_verbs</span>: [<span class="s">"querer"</span>, <span class="s">"tener"</span>, <span class="s">"ir"</span>, ...]
 <span class="k">micro_scenarios_completed</span>: <span class="r">18</span>
 <span class="k">mode</span>: <span class="s">"recognition"</span>      <span class="c"># NOT generation at true zero</span>
-<span class="k">pool_ready_for_full</span>: <span class="e">true</span>  <span class="c"># gate to exit cold-start</span></pre></div>
-      <div class="field"><span class="lbl">Verification checks</span>
-<ul class="checks">
-  <li>Every verb in <code>seeded_verbs</code> was introduced inside a micro-scenario — never as an isolated conjugation. (Charter non-goal: not a drill app.)</li>
-  <li><code>mode == "recognition"</code> while pool is below target; generation is not required of the user here.</li>
-  <li><code>pool_ready_for_full == true</code> only when <code>seeded_verbs.length &gt;= seed_target</code>.</li>
-</ul></div>
-      <div class="field"><span class="lbl">Failure modes</span>
-<ul class="errs">
-  <li><code>E_CORPUS_MISSING</code> — no micro-scenario exists for a needed core verb. Block, do not fabricate at runtime.</li>
-  <li><code>E_FORCED_GENERATION</code> — system demanded user-generation at zero state. Reject: violates §4.3 ramp.</li>
-</ul></div>
-    </div>
-  </div>
+<span class="k">pool_ready_for_full</span>: <span class="e">true</span>  <span class="c"># gate to exit cold-start</span></pre>
+          </div>
+          <div class="field">
+            <span class="lbl">Verification checks</span>
+            <ul class="checks">
+              <li>
+                Every verb in <code>seeded_verbs</code> was introduced inside a micro-scenario —
+                never as an isolated conjugation. (Charter non-goal: not a drill app.)
+              </li>
+              <li>
+                <code>mode == "recognition"</code> while pool is below target; generation is not
+                required of the user here.
+              </li>
+              <li>
+                <code>pool_ready_for_full == true</code> only when
+                <code>seeded_verbs.length &gt;= seed_target</code>.
+              </li>
+            </ul>
+          </div>
+          <div class="field">
+            <span class="lbl">Failure modes</span>
+            <ul class="errs">
+              <li>
+                <code>E_CORPUS_MISSING</code> — no micro-scenario exists for a needed core verb.
+                Block, do not fabricate at runtime.
+              </li>
+              <li>
+                <code>E_FORCED_GENERATION</code> — system demanded user-generation at zero state.
+                Reject: violates §4.3 ramp.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
 
-  <div class="contract" style="animation-delay:.16s">
-    <div class="c-top">
-      <div class="c-id"><span class="name">resolve_scenario</span><span class="badge b-v1">v1</span><span class="badge b-stakes">routes risk</span></div>
-      <p class="c-purpose">Turn a user request (or a picked starter scenario) into a resolved scenario spec, and <strong>route it by stakes</strong>: high-stakes topics → vetted path, everyday → live path. This is the boundary where the #1 risk is governed.</p>
-      <p class="c-owner">OWNER: Scenario-Router service · CALLS: classify_stakes, then provision_scenario</p>
-    </div>
-    <div class="c-body">
-      <div class="field"><span class="lbl">Invoke · input</span>
-<pre><span class="k">user_id</span>: <span class="s">"usr_..."</span>
+      <div class="contract" style="animation-delay: 0.16s">
+        <div class="c-top">
+          <div class="c-id">
+            <span class="name">resolve_scenario</span><span class="badge b-v1">v1</span
+            ><span class="badge b-stakes">routes risk</span>
+          </div>
+          <p class="c-purpose">
+            Turn a user request (or a picked starter scenario) into a resolved scenario spec, and
+            <strong>route it by stakes</strong>: high-stakes topics → vetted path, everyday → live
+            path. This is the boundary where the #1 risk is governed.
+          </p>
+          <p class="c-owner">
+            OWNER: Scenario-Router service · CALLS: classify_stakes, then provision_scenario
+          </p>
+        </div>
+        <div class="c-body">
+          <div class="field">
+            <span class="lbl">Invoke · input</span>
+            <pre><span class="k">user_id</span>: <span class="s">"usr_..."</span>
 <span class="k">request</span>: <span class="s">"I have a cita at the extranjería"</span>
 <span class="k">user_high_stakes_flag</span>: <span class="e">false</span>   <span class="c"># explicit user signal, optional</span>
-<span class="k">locale</span>: <span class="s">"es-ES"</span>                 <span class="c"># fixed in v1</span></pre></div>
-      <div class="field"><span class="lbl">Verify · output</span>
-<pre><span class="k">scenario_id</span>: <span class="s">"scn_..."</span>
+<span class="k">locale</span>: <span class="s">"es-ES"</span>                 <span class="c"># fixed in v1</span></pre>
+          </div>
+          <div class="field">
+            <span class="lbl">Verify · output</span>
+            <pre><span class="k">scenario_id</span>: <span class="s">"scn_..."</span>
 <span class="k">title</span>: <span class="s">"Immigration appointment (TIE pickup)"</span>
 <span class="k">stakes</span>: <span class="s">"high"</span>                 <span class="c"># high | everyday</span>
 <span class="k">route</span>: <span class="s">"vetted"</span>                <span class="c"># vetted | live</span>
 <span class="k">gating_verbs</span>: [<span class="s">"recoger"</span>,<span class="s">"presentar"</span>,<span class="s">"esperar"</span>]
-<span class="k">missing_verbs</span>: [<span class="s">"presentar"</span>]   <span class="c"># not yet in pool → must drill</span></pre></div>
-      <div class="field"><span class="lbl">Verification checks</span>
-<ul class="checks">
-  <li>If topic ∈ {immigration, legal, medical, financial, housing-contract} OR <code>user_high_stakes_flag</code> → <code>route == "vetted"</code>. No exceptions.</li>
-  <li><code>route == "live"</code> permitted only when <code>stakes == "everyday"</code>.</li>
-  <li><code>gating_verbs</code> ⊆ the 100-verb set (Charter non-goal: no out-of-scope vocabulary).</li>
-</ul></div>
-      <div class="invariant"><b>Hard invariant</b>A high-stakes scenario MUST NOT be served on the live path. Misroute here is the single most severe contract violation (Charter: "never generate consequential content unguarded").</div>
-    </div>
-  </div>
+<span class="k">missing_verbs</span>: [<span class="s">"presentar"</span>]   <span class="c"># not yet in pool → must drill</span></pre>
+          </div>
+          <div class="field">
+            <span class="lbl">Verification checks</span>
+            <ul class="checks">
+              <li>
+                If topic ∈ {immigration, legal, medical, financial, housing-contract} OR
+                <code>user_high_stakes_flag</code> → <code>route == "vetted"</code>. No exceptions.
+              </li>
+              <li>
+                <code>route == "live"</code> permitted only when <code>stakes == "everyday"</code>.
+              </li>
+              <li>
+                <code>gating_verbs</code> ⊆ the 100-verb set (Charter non-goal: no out-of-scope
+                vocabulary).
+              </li>
+            </ul>
+          </div>
+          <div class="invariant">
+            <b>Hard invariant</b>A high-stakes scenario MUST NOT be served on the live path.
+            Misroute here is the single most severe contract violation (Charter: "never generate
+            consequential content unguarded").
+          </div>
+        </div>
+      </div>
 
-  <!-- GROUP B: CONTENT PROVISION -->
-  <h2 class="group"><span class="gn">B</span> Content provision</h2>
+      <!-- GROUP B: CONTENT PROVISION -->
+      <h2 class="group"><span class="gn">B</span> Content provision</h2>
 
-  <div class="contract" style="animation-delay:.1s">
-    <div class="c-top">
-      <div class="c-id"><span class="name">provision_scenario</span><span class="badge b-v1">v1</span></div>
-      <p class="c-purpose">Materialize the resolved scenario's content (dialogue, prompts, audio) via the route chosen by <code>resolve_scenario</code>. Live = on-demand generation constrained to guardrails; vetted = validated phrasing layer + native-reviewed.</p>
-      <p class="c-owner">OWNER: Content-Runtime (live) / Content-Vetting (vetted) · GATED BY: route</p>
-    </div>
-    <div class="c-body">
-      <div class="field"><span class="lbl">Invoke · input</span>
-<pre><span class="k">scenario_id</span>: <span class="s">"scn_..."</span>
+      <div class="contract" style="animation-delay: 0.1s">
+        <div class="c-top">
+          <div class="c-id">
+            <span class="name">provision_scenario</span><span class="badge b-v1">v1</span>
+          </div>
+          <p class="c-purpose">
+            Materialize the resolved scenario's content (dialogue, prompts, audio) via the route
+            chosen by <code>resolve_scenario</code>. Live = on-demand generation constrained to
+            guardrails; vetted = validated phrasing layer + native-reviewed.
+          </p>
+          <p class="c-owner">
+            OWNER: Content-Runtime (live) / Content-Vetting (vetted) · GATED BY: route
+          </p>
+        </div>
+        <div class="c-body">
+          <div class="field">
+            <span class="lbl">Invoke · input</span>
+            <pre><span class="k">scenario_id</span>: <span class="s">"scn_..."</span>
 <span class="k">route</span>: <span class="s">"live"</span>                  <span class="c"># from resolve_scenario, not overridable</span>
-<span class="k">level</span>: <span class="s">"beginner"</span></pre></div>
-      <div class="field"><span class="lbl">Verify · output</span>
-<pre><span class="k">dialogue</span>: [{<span class="k">speaker</span>:<span class="s">"cashier"</span>, <span class="k">text</span>:<span class="s">"¿Quieres bolsa?"</span>}, ...]
+<span class="k">level</span>: <span class="s">"beginner"</span></pre>
+          </div>
+          <div class="field">
+            <span class="lbl">Verify · output</span>
+            <pre><span class="k">dialogue</span>: [{<span class="k">speaker</span>:<span class="s">"cashier"</span>, <span class="k">text</span>:<span class="s">"¿Quieres bolsa?"</span>}, ...]
 <span class="k">audio</span>: {<span class="k">source</span>:<span class="s">"tts"</span>, <span class="k">voice</span>:<span class="s">"es-ES"</span>}   <span class="c"># "produced" for vetted</span>
 <span class="k">phrasing_provenance</span>: <span class="s">"live_guardrailed"</span>      <span class="c"># or "validated_layer"</span>
-<span class="k">guardrail_passed</span>: <span class="e">true</span></pre></div>
-      <div class="field"><span class="lbl">Verification checks</span>
-<ul class="checks">
-  <li>If input <code>route == "vetted"</code> → <code>phrasing_provenance == "validated_layer"</code> and a native-review stamp is present.</li>
-  <li>If <code>route == "live"</code> → <code>guardrail_passed == true</code>; on false, do not surface to user, emit flag.</li>
-  <li>Register/locale match es-ES; no invented procedures or institutions on the live path.</li>
-</ul></div>
-      <div class="field"><span class="lbl">Failure modes</span>
-<ul class="errs">
-  <li><code>E_GUARDRAIL_FAIL</code> — live generation produced inauthentic/risky phrasing. Suppress + log to <code>guardrail_violation_rate</code> metric.</li>
-  <li><code>E_ROUTE_OVERRIDE</code> — caller attempted to force vetted content onto live path or vice-versa. Reject.</li>
-</ul></div>
-    </div>
-  </div>
+<span class="k">guardrail_passed</span>: <span class="e">true</span></pre>
+          </div>
+          <div class="field">
+            <span class="lbl">Verification checks</span>
+            <ul class="checks">
+              <li>
+                If input <code>route == "vetted"</code> →
+                <code>phrasing_provenance == "validated_layer"</code> and a native-review stamp is
+                present.
+              </li>
+              <li>
+                If <code>route == "live"</code> → <code>guardrail_passed == true</code>; on false,
+                do not surface to user, emit flag.
+              </li>
+              <li>
+                Register/locale match es-ES; no invented procedures or institutions on the live
+                path.
+              </li>
+            </ul>
+          </div>
+          <div class="field">
+            <span class="lbl">Failure modes</span>
+            <ul class="errs">
+              <li>
+                <code>E_GUARDRAIL_FAIL</code> — live generation produced inauthentic/risky phrasing.
+                Suppress + log to <code>guardrail_violation_rate</code> metric.
+              </li>
+              <li>
+                <code>E_ROUTE_OVERRIDE</code> — caller attempted to force vetted content onto live
+                path or vice-versa. Reject.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
 
-  <div class="contract" style="animation-delay:.16s">
-    <div class="c-top">
-      <div class="c-id"><span class="name">generate_curveball</span><span class="badge b-v1">v1</span></div>
-      <p class="c-purpose">Produce an off-script twist or small-talk turn for a scenario the user has already cleared — the engine behind ladder rungs 3–4. Inherently generative; cannot be pre-built.</p>
-      <p class="c-owner">OWNER: Content-Runtime · CONSTRAINED BY: scenario context + level</p>
-    </div>
-    <div class="c-body">
-      <div class="field"><span class="lbl">Invoke · input</span>
-<pre><span class="k">scenario_id</span>: <span class="s">"scn_..."</span>
+      <div class="contract" style="animation-delay: 0.16s">
+        <div class="c-top">
+          <div class="c-id">
+            <span class="name">generate_curveball</span><span class="badge b-v1">v1</span>
+          </div>
+          <p class="c-purpose">
+            Produce an off-script twist or small-talk turn for a scenario the user has already
+            cleared — the engine behind ladder rungs 3–4. Inherently generative; cannot be
+            pre-built.
+          </p>
+          <p class="c-owner">OWNER: Content-Runtime · CONSTRAINED BY: scenario context + level</p>
+        </div>
+        <div class="c-body">
+          <div class="field">
+            <span class="lbl">Invoke · input</span>
+            <pre><span class="k">scenario_id</span>: <span class="s">"scn_..."</span>
 <span class="k">current_rung</span>: <span class="r">2</span>             <span class="c"># survived_solo → push toward 3/4</span>
-<span class="k">type</span>: <span class="s">"small_talk"</span>       <span class="c"># curveball | small_talk</span></pre></div>
-      <div class="field"><span class="lbl">Verify · output</span>
-<pre><span class="k">turn</span>: <span class="s">"¿Qué tal la mañana?"</span>
+<span class="k">type</span>: <span class="s">"small_talk"</span>       <span class="c"># curveball | small_talk</span></pre>
+          </div>
+          <div class="field">
+            <span class="lbl">Verify · output</span>
+            <pre><span class="k">turn</span>: <span class="s">"¿Qué tal la mañana?"</span>
 <span class="k">stays_in_scenario</span>: <span class="e">true</span>
 <span class="k">level_appropriate</span>: <span class="e">true</span>
-<span class="k">uses_pool_verbs_only</span>: <span class="e">true</span></pre></div>
-      <div class="field"><span class="lbl">Verification checks</span>
-<ul class="checks">
-  <li><code>stays_in_scenario == true</code> — a curveball is a twist, not a new topic.</li>
-  <li>Only offered when <code>current_rung &gt;= 2</code> (don't surprise a user still surviving the script).</li>
-</ul></div>
-    </div>
-  </div>
+<span class="k">uses_pool_verbs_only</span>: <span class="e">true</span></pre>
+          </div>
+          <div class="field">
+            <span class="lbl">Verification checks</span>
+            <ul class="checks">
+              <li>
+                <code>stays_in_scenario == true</code> — a curveball is a twist, not a new topic.
+              </li>
+              <li>
+                Only offered when <code>current_rung &gt;= 2</code> (don't surprise a user still
+                surviving the script).
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
 
-  <!-- GROUP C: PRACTICE -->
-  <h2 class="group"><span class="gn">C</span> Practice</h2>
+      <!-- GROUP C: PRACTICE -->
+      <h2 class="group"><span class="gn">C</span> Practice</h2>
 
-  <div class="contract" style="animation-delay:.1s">
-    <div class="c-top">
-      <div class="c-id"><span class="name">drill_verbs</span><span class="badge b-v1">v1</span></div>
-      <p class="c-purpose">Run the scaffold-and-fade production ladder for a scenario's gating verbs: card/tile assembly → word-bank → free typing, titrated to per-verb mastery. No multiple-choice recognition (that's a non-goal above the cold-start floor).</p>
-      <p class="c-owner">OWNER: Practice-Engine · READS/WRITES: verb mastery pool</p>
-    </div>
-    <div class="c-body">
-      <div class="field"><span class="lbl">Invoke · input</span>
-<pre><span class="k">user_id</span>: <span class="s">"usr_..."</span>
+      <div class="contract" style="animation-delay: 0.1s">
+        <div class="c-top">
+          <div class="c-id">
+            <span class="name">drill_verbs</span><span class="badge b-v1">v1</span>
+          </div>
+          <p class="c-purpose">
+            Run the scaffold-and-fade production ladder for a scenario's gating verbs: card/tile
+            assembly → word-bank → free typing, titrated to per-verb mastery. No multiple-choice
+            recognition (that's a non-goal above the cold-start floor).
+          </p>
+          <p class="c-owner">OWNER: Practice-Engine · READS/WRITES: verb mastery pool</p>
+        </div>
+        <div class="c-body">
+          <div class="field">
+            <span class="lbl">Invoke · input</span>
+            <pre><span class="k">user_id</span>: <span class="s">"usr_..."</span>
 <span class="k">verbs</span>: [<span class="s">"querer"</span>,<span class="s">"pagar"</span>]
 <span class="k">forms</span>: [<span class="s">"present"</span>,<span class="s">"ir_a_future"</span>,<span class="s">"preterite"</span>]
-<span class="k">persons</span>: [<span class="s">"yo"</span>,<span class="s">"tu"</span>,<span class="s">"usted"</span>]   <span class="c"># v1 scope only</span></pre></div>
-      <div class="field"><span class="lbl">Verify · output</span>
-<pre><span class="k">results</span>: [{<span class="k">verb</span>:<span class="s">"querer"</span>, <span class="k">input_mode</span>:<span class="s">"typing"</span>, <span class="k">correct</span>:<span class="e">true</span>, <span class="k">latency_ms</span>:<span class="r">2400</span>}]
+<span class="k">persons</span>: [<span class="s">"yo"</span>,<span class="s">"tu"</span>,<span class="s">"usted"</span>]   <span class="c"># v1 scope only</span></pre>
+          </div>
+          <div class="field">
+            <span class="lbl">Verify · output</span>
+            <pre><span class="k">results</span>: [{<span class="k">verb</span>:<span class="s">"querer"</span>, <span class="k">input_mode</span>:<span class="s">"typing"</span>, <span class="k">correct</span>:<span class="e">true</span>, <span class="k">latency_ms</span>:<span class="r">2400</span>}]
 <span class="k">scaffold_level</span>: <span class="s">"typing"</span>   <span class="c"># tiles | word_bank | typing</span>
-<span class="k">mastery_delta</span>: {<span class="s">"querer"</span>: <span class="r">+0.1</span>}</pre></div>
-      <div class="field"><span class="lbl">Verification checks</span>
-<ul class="checks">
-  <li><code>forms</code> ⊆ {present, ir_a_future, preterite} and <code>persons</code> ⊆ {yo, tú, usted} — v1 conjugation scope.</li>
-  <li><code>scaffold_level</code> fades toward <code>typing</code> as mastery rises; never regresses to multiple-choice.</li>
-  <li><code>latency_ms</code> recorded — feeds the "rapid retrieval" success metric.</li>
-</ul></div>
-    </div>
-  </div>
+<span class="k">mastery_delta</span>: {<span class="s">"querer"</span>: <span class="r">+0.1</span>}</pre>
+          </div>
+          <div class="field">
+            <span class="lbl">Verification checks</span>
+            <ul class="checks">
+              <li>
+                <code>forms</code> ⊆ {present, ir_a_future, preterite} and <code>persons</code> ⊆
+                {yo, tú, usted} — v1 conjugation scope.
+              </li>
+              <li>
+                <code>scaffold_level</code> fades toward <code>typing</code> as mastery rises; never
+                regresses to multiple-choice.
+              </li>
+              <li>
+                <code>latency_ms</code> recorded — feeds the "rapid retrieval" success metric.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
 
-  <div class="contract" style="animation-delay:.16s">
-    <div class="c-top">
-      <div class="c-id"><span class="name">rehearse_dialogue</span><span class="badge b-v1">v1</span><span class="badge b-v1">v1 · §4.5</span></div>
-      <p class="c-purpose">Stakes-free, repeatable role-play of the full exchange with the AI partner. Doubles as the <strong>pre-mission confidence surface</strong> the anxious user needs before ever attempting reality (J4). Unlimited retries, no scoring.</p>
-      <p class="c-owner">OWNER: Content-Runtime (role-play) · NO real-world side effects</p>
-    </div>
-    <div class="c-body">
-      <div class="field"><span class="lbl">Invoke · input</span>
-<pre><span class="k">user_id</span>: <span class="s">"usr_..."</span>
+      <div class="contract" style="animation-delay: 0.16s">
+        <div class="c-top">
+          <div class="c-id">
+            <span class="name">rehearse_dialogue</span><span class="badge b-v1">v1</span
+            ><span class="badge b-v1">v1 · §4.5</span>
+          </div>
+          <p class="c-purpose">
+            Stakes-free, repeatable role-play of the full exchange with the AI partner. Doubles as
+            the <strong>pre-mission confidence surface</strong> the anxious user needs before ever
+            attempting reality (J4). Unlimited retries, no scoring.
+          </p>
+          <p class="c-owner">OWNER: Content-Runtime (role-play) · NO real-world side effects</p>
+        </div>
+        <div class="c-body">
+          <div class="field">
+            <span class="lbl">Invoke · input</span>
+            <pre><span class="k">user_id</span>: <span class="s">"usr_..."</span>
 <span class="k">scenario_id</span>: <span class="s">"scn_..."</span>
-<span class="k">partner_mode</span>: <span class="s">"forgiving"</span>   <span class="c"># forgiving | natural_speed</span></pre></div>
-      <div class="field"><span class="lbl">Verify · output</span>
-<pre><span class="k">transcript</span>: [...]
+<span class="k">partner_mode</span>: <span class="s">"forgiving"</span>   <span class="c"># forgiving | natural_speed</span></pre>
+          </div>
+          <div class="field">
+            <span class="lbl">Verify · output</span>
+            <pre><span class="k">transcript</span>: [...]
 <span class="k">retries_used</span>: <span class="r">3</span>            <span class="c"># unlimited by design</span>
 <span class="k">scored</span>: <span class="e">false</span>             <span class="c"># MUST be false — confidence, not assessment</span>
-<span class="k">confidence_signal</span>: <span class="s">"rehearsed_confidently"</span>  <span class="c"># pre-0 rung</span></pre></div>
-      <div class="field"><span class="lbl">Verification checks</span>
-<ul class="checks">
-  <li><code>scored == false</code> always — rehearsal must never feel like a test (J4 churn risk).</li>
-  <li>Retries are unbounded; no penalty surfaces to the user.</li>
-  <li>May emit <code>confidence_signal</code> as a pre-mission rung but must not gate progress on a real mission.</li>
-</ul></div>
-    </div>
-  </div>
+<span class="k">confidence_signal</span>: <span class="s">"rehearsed_confidently"</span>  <span class="c"># pre-0 rung</span></pre>
+          </div>
+          <div class="field">
+            <span class="lbl">Verification checks</span>
+            <ul class="checks">
+              <li>
+                <code>scored == false</code> always — rehearsal must never feel like a test (J4
+                churn risk).
+              </li>
+              <li>Retries are unbounded; no penalty surfaces to the user.</li>
+              <li>
+                May emit <code>confidence_signal</code> as a pre-mission rung but must not gate
+                progress on a real mission.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
 
-  <!-- GROUP D: OUTCOME -->
-  <h2 class="group"><span class="gn">D</span> Outcome &amp; progression</h2>
+      <!-- GROUP D: OUTCOME -->
+      <h2 class="group"><span class="gn">D</span> Outcome &amp; progression</h2>
 
-  <div class="contract" style="animation-delay:.1s">
-    <div class="c-top">
-      <div class="c-id"><span class="name">grade_mission</span><span class="badge b-v1">v1</span></div>
-      <p class="c-purpose">Capture the user's <strong>self-graded</strong> real-world outcome on the Competency Ladder, plus the "Were you understood?" comprehension signal. Includes an explicit <code>not_yet</code> option that is not failure (J4).</p>
-      <p class="c-owner">OWNER: Progression service · INPUT IS SELF-REPORT — never auto-verified in v1</p>
-    </div>
-    <div class="c-body">
-      <div class="field"><span class="lbl">Invoke · input</span>
-<pre><span class="k">user_id</span>: <span class="s">"usr_..."</span>
+      <div class="contract" style="animation-delay: 0.1s">
+        <div class="c-top">
+          <div class="c-id">
+            <span class="name">grade_mission</span><span class="badge b-v1">v1</span>
+          </div>
+          <p class="c-purpose">
+            Capture the user's <strong>self-graded</strong> real-world outcome on the Competency
+            Ladder, plus the "Were you understood?" comprehension signal. Includes an explicit
+            <code>not_yet</code> option that is not failure (J4).
+          </p>
+          <p class="c-owner">
+            OWNER: Progression service · INPUT IS SELF-REPORT — never auto-verified in v1
+          </p>
+        </div>
+        <div class="c-body">
+          <div class="field">
+            <span class="lbl">Invoke · input</span>
+            <pre><span class="k">user_id</span>: <span class="s">"usr_..."</span>
 <span class="k">scenario_id</span>: <span class="s">"scn_..."</span>
 <span class="k">rung</span>: <span class="s">"survived_solo"</span>
    <span class="c"># not_yet | froze | survived_with_phone | survived_solo |</span>
    <span class="c"># handled_curveball | made_small_talk</span>
-<span class="k">understood</span>: <span class="s">"repeated_once"</span>  <span class="c"># first_try | repeated_once | not_understood</span></pre></div>
-      <div class="field"><span class="lbl">Verify · output</span>
-<pre><span class="k">accepted</span>: <span class="e">true</span>
+<span class="k">understood</span>: <span class="s">"repeated_once"</span>  <span class="c"># first_try | repeated_once | not_understood</span></pre>
+          </div>
+          <div class="field">
+            <span class="lbl">Verify · output</span>
+            <pre><span class="k">accepted</span>: <span class="e">true</span>
 <span class="k">rung_recorded</span>: <span class="s">"survived_solo"</span>
 <span class="k">is_failure</span>: <span class="e">false</span>        <span class="c"># not_yet and froze are NOT scored as failure</span>
-<span class="k">trend</span>: <span class="s">"up"</span>               <span class="c"># confidence/trend signal, not a hard score</span></pre></div>
-      <div class="field"><span class="lbl">Verification checks</span>
-<ul class="checks">
-  <li><code>rung == "not_yet"</code> → <code>is_failure == false</code>; routes user back to <code>rehearse_dialogue</code>, not a fail state.</li>
-  <li><code>understood</code> treated as a noisy confidence signal — never a precise score, never app-side ASR in v1.</li>
-  <li>No geolocation or automated verification asserted — outcome is self-report by design.</li>
-</ul></div>
-    </div>
-  </div>
+<span class="k">trend</span>: <span class="s">"up"</span>               <span class="c"># confidence/trend signal, not a hard score</span></pre>
+          </div>
+          <div class="field">
+            <span class="lbl">Verification checks</span>
+            <ul class="checks">
+              <li>
+                <code>rung == "not_yet"</code> → <code>is_failure == false</code>; routes user back
+                to <code>rehearse_dialogue</code>, not a fail state.
+              </li>
+              <li>
+                <code>understood</code> treated as a noisy confidence signal — never a precise
+                score, never app-side ASR in v1.
+              </li>
+              <li>
+                No geolocation or automated verification asserted — outcome is self-report by
+                design.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
 
-  <div class="contract" style="animation-delay:.16s">
-    <div class="c-top">
-      <div class="c-id"><span class="name">update_ladder</span> &amp; <span class="name">update_verb_mastery</span><span class="badge b-v1">v1</span></div>
-      <p class="c-purpose">Persist progression: advance the scenario's ladder rung and fold drilled verbs into the <strong>shared mastery pool</strong> so the next <code>resolve_scenario</code> starts ahead, not from zero. This is the loop-back that makes effort compound.</p>
-      <p class="c-owner">OWNER: Progression service · WRITES: shared verb pool (global, cross-scenario)</p>
-    </div>
-    <div class="c-body">
-      <div class="field"><span class="lbl">Verify · output</span>
-<pre><span class="k">scenario_rung</span>: <span class="s">"survived_solo"</span>
+      <div class="contract" style="animation-delay: 0.16s">
+        <div class="c-top">
+          <div class="c-id">
+            <span class="name">update_ladder</span> &amp;
+            <span class="name">update_verb_mastery</span><span class="badge b-v1">v1</span>
+          </div>
+          <p class="c-purpose">
+            Persist progression: advance the scenario's ladder rung and fold drilled verbs into the
+            <strong>shared mastery pool</strong> so the next <code>resolve_scenario</code> starts
+            ahead, not from zero. This is the loop-back that makes effort compound.
+          </p>
+          <p class="c-owner">
+            OWNER: Progression service · WRITES: shared verb pool (global, cross-scenario)
+          </p>
+        </div>
+        <div class="c-body">
+          <div class="field">
+            <span class="lbl">Verify · output</span>
+            <pre><span class="k">scenario_rung</span>: <span class="s">"survived_solo"</span>
 <span class="k">pool_updated</span>: [{<span class="k">verb</span>:<span class="s">"pagar"</span>, <span class="k">mastery</span>:<span class="r">0.7</span>}]
-<span class="k">carries_to_future_scenarios</span>: <span class="e">true</span>   <span class="c"># shared, not siloed</span></pre></div>
-      <div class="field"><span class="lbl">Verification checks</span>
-<ul class="checks">
-  <li>Mastery is global: a verb mastered in scenario A is available in scenario B. Never reset per-scenario.</li>
-  <li>A cleared scenario is NOT retired — it remains re-servable for ladder climbing (rungs 3–4).</li>
-</ul></div>
-      <div class="invariant"><b>Loop invariant</b><code>update_verb_mastery</code> output must feed the next <code>resolve_scenario</code>'s <code>missing_verbs</code> calculation. If the pool doesn't compound across scenarios, the product's core promise is broken.</div>
+<span class="k">carries_to_future_scenarios</span>: <span class="e">true</span>   <span class="c"># shared, not siloed</span></pre>
+          </div>
+          <div class="field">
+            <span class="lbl">Verification checks</span>
+            <ul class="checks">
+              <li>
+                Mastery is global: a verb mastered in scenario A is available in scenario B. Never
+                reset per-scenario.
+              </li>
+              <li>
+                A cleared scenario is NOT retired — it remains re-servable for ladder climbing
+                (rungs 3–4).
+              </li>
+            </ul>
+          </div>
+          <div class="invariant">
+            <b>Loop invariant</b><code>update_verb_mastery</code> output must feed the next
+            <code>resolve_scenario</code>'s <code>missing_verbs</code> calculation. If the pool
+            doesn't compound across scenarios, the product's core promise is broken.
+          </div>
+        </div>
+      </div>
+
+      <div class="principle">
+        <b>HOW TO COMPOSE →</b> a full session = <code>seed_verb_pool?</code> →
+        <code>resolve_scenario</code> → <code>provision_scenario</code> → <code>drill_verbs</code> →
+        <code>rehearse_dialogue</code> → <code>grade_mission</code> → <code>update_ladder</code> +
+        <code>update_verb_mastery</code> → loop. <code>seed_verb_pool</code> runs only on an empty
+        pool; <code>rehearse_dialogue</code> is stakes-free/unscored and serves the pre-mission
+        user, and <code>grade_mission.not_yet</code> is never failure. All are part of v1 (PRD v0.4
+        §5.0 / §4.5).
+      </div>
+
+      <footer>
+        <span
+          >SURVIVAL SPANISH · INTERFACE CONTRACTS · grounded in PRD v0.4 + Charter + Journeys</span
+        >
+        <span>Machine-readable copy below ↓</span>
+      </footer>
     </div>
-  </div>
 
-  <div class="principle"><b>HOW TO COMPOSE →</b> a full session = <code>seed_verb_pool?</code> → <code>resolve_scenario</code> → <code>provision_scenario</code> → <code>drill_verbs</code> → <code>rehearse_dialogue</code> → <code>grade_mission</code> → <code>update_ladder</code> + <code>update_verb_mastery</code> → loop. <code>seed_verb_pool</code> runs only on an empty pool; <code>rehearse_dialogue</code> is stakes-free/unscored and serves the pre-mission user, and <code>grade_mission.not_yet</code> is never failure. All are part of v1 (PRD v0.4 §5.0 / §4.5).</div>
-
-  <footer>
-    <span>SURVIVAL SPANISH · INTERFACE CONTRACTS · grounded in PRD v0.4 + Charter + Journeys</span>
-    <span>Machine-readable copy below ↓</span>
-  </footer>
-</div>
-
-<!--
+    <!--
   ============================================================
   MACHINE-READABLE CONTRACTS (agents: parse this block)
   ============================================================
 -->
-<script type="application/yaml" id="contracts">
-contracts_version: 0.1
-source: [PRD v0.4, Agent Charter, User Journeys]
-locale: es-ES
-loop: [seed_verb_pool, resolve_scenario, provision_scenario, drill_verbs, rehearse_dialogue, grade_mission, update_ladder, update_verb_mastery]
+    <script type="application/yaml" id="contracts">
+      contracts_version: 0.1
+      source: [PRD v0.4, Agent Charter, User Journeys]
+      locale: es-ES
+      loop: [seed_verb_pool, resolve_scenario, provision_scenario, drill_verbs, rehearse_dialogue, grade_mission, update_ladder, update_verb_mastery]
 
-capabilities:
-  - name: seed_verb_pool
-    status: v1
-    source_ref: PRD v0.4 §5.0   # cold-start seeding, now in PRD
-    owner: learning-content
-    purpose: Bootstrap zero-verb users via micro-scenarios until pool can run a full scenario.
-    precondition: verb_pool.size < seed_target
-    input: {user_id: string, native_language: string, seed_target: int}
-    output: {seeded_verbs: [string], micro_scenarios_completed: int, mode: recognition, pool_ready_for_full: bool}
-    invariants:
-      - verbs introduced only inside micro-scenarios, never isolated drills
-      - mode is recognition at true zero (generation is the later destination)
-    errors: [E_CORPUS_MISSING, E_FORCED_GENERATION]
+      capabilities:
+        - name: seed_verb_pool
+          status: v1
+          source_ref: PRD v0.4 §5.0   # cold-start seeding, now in PRD
+          owner: learning-content
+          purpose: Bootstrap zero-verb users via micro-scenarios until pool can run a full scenario.
+          precondition: verb_pool.size < seed_target
+          input: {user_id: string, native_language: string, seed_target: int}
+          output: {seeded_verbs: [string], micro_scenarios_completed: int, mode: recognition, pool_ready_for_full: bool}
+          invariants:
+            - verbs introduced only inside micro-scenarios, never isolated drills
+            - mode is recognition at true zero (generation is the later destination)
+          errors: [E_CORPUS_MISSING, E_FORCED_GENERATION]
 
-  - name: resolve_scenario
-    status: v1
-    owner: scenario-router
-    purpose: Turn a request into a scenario spec and route by stakes (vetted vs live).
-    input: {user_id: string, request: string, user_high_stakes_flag: bool, locale: es-ES}
-    output: {scenario_id: string, title: string, stakes: [high, everyday], route: [vetted, live], gating_verbs: [string], missing_verbs: [string]}
-    invariants:
-      - HARD: high-stakes topics or user flag => route=vetted, no exceptions
-      - gating_verbs subset of the 100-verb set
-    high_stakes_topics: [immigration, legal, medical, financial, housing_contract]
+        - name: resolve_scenario
+          status: v1
+          owner: scenario-router
+          purpose: Turn a request into a scenario spec and route by stakes (vetted vs live).
+          input: {user_id: string, request: string, user_high_stakes_flag: bool, locale: es-ES}
+          output: {scenario_id: string, title: string, stakes: [high, everyday], route: [vetted, live], gating_verbs: [string], missing_verbs: [string]}
+          invariants:
+            - HARD: high-stakes topics or user flag => route=vetted, no exceptions
+            - gating_verbs subset of the 100-verb set
+          high_stakes_topics: [immigration, legal, medical, financial, housing_contract]
 
-  - name: provision_scenario
-    status: v1
-    owner: content-runtime | content-vetting
-    purpose: Materialize dialogue/audio for the resolved scenario via its route.
-    input: {scenario_id: string, route: [vetted, live], level: string}
-    output: {dialogue: [turn], audio: {source: [tts, produced]}, phrasing_provenance: [live_guardrailed, validated_layer], guardrail_passed: bool}
-    invariants:
-      - vetted route => provenance=validated_layer + native-review stamp
-      - live route => guardrail_passed required; suppress on fail
-    errors: [E_GUARDRAIL_FAIL, E_ROUTE_OVERRIDE]
+        - name: provision_scenario
+          status: v1
+          owner: content-runtime | content-vetting
+          purpose: Materialize dialogue/audio for the resolved scenario via its route.
+          input: {scenario_id: string, route: [vetted, live], level: string}
+          output: {dialogue: [turn], audio: {source: [tts, produced]}, phrasing_provenance: [live_guardrailed, validated_layer], guardrail_passed: bool}
+          invariants:
+            - vetted route => provenance=validated_layer + native-review stamp
+            - live route => guardrail_passed required; suppress on fail
+          errors: [E_GUARDRAIL_FAIL, E_ROUTE_OVERRIDE]
 
-  - name: generate_curveball
-    status: v1
-    owner: content-runtime
-    purpose: Off-script twist / small-talk turn for ladder rungs 3-4.
-    input: {scenario_id: string, current_rung: int, type: [curveball, small_talk]}
-    output: {turn: string, stays_in_scenario: bool, level_appropriate: bool, uses_pool_verbs_only: bool}
-    invariants: [offered only when current_rung >= 2, stays_in_scenario true]
+        - name: generate_curveball
+          status: v1
+          owner: content-runtime
+          purpose: Off-script twist / small-talk turn for ladder rungs 3-4.
+          input: {scenario_id: string, current_rung: int, type: [curveball, small_talk]}
+          output: {turn: string, stays_in_scenario: bool, level_appropriate: bool, uses_pool_verbs_only: bool}
+          invariants: [offered only when current_rung >= 2, stays_in_scenario true]
 
-  - name: drill_verbs
-    status: v1
-    owner: practice-engine
-    purpose: Scaffold-and-fade production ladder (tiles -> word_bank -> typing).
-    input: {user_id: string, verbs: [string], forms: [present, ir_a_future, preterite], persons: [yo, tu, usted]}
-    output: {results: [{verb, input_mode, correct, latency_ms}], scaffold_level: [tiles, word_bank, typing], mastery_delta: map}
-    invariants:
-      - forms/persons within v1 conjugation scope
-      - never regress to multiple-choice recognition (above cold-start floor)
+        - name: drill_verbs
+          status: v1
+          owner: practice-engine
+          purpose: Scaffold-and-fade production ladder (tiles -> word_bank -> typing).
+          input: {user_id: string, verbs: [string], forms: [present, ir_a_future, preterite], persons: [yo, tu, usted]}
+          output: {results: [{verb, input_mode, correct, latency_ms}], scaffold_level: [tiles, word_bank, typing], mastery_delta: map}
+          invariants:
+            - forms/persons within v1 conjugation scope
+            - never regress to multiple-choice recognition (above cold-start floor)
 
-  - name: rehearse_dialogue
-    status: v1
-    source_ref: PRD v0.4 §4.5   # pre-mission confidence surface, now in PRD
-    owner: content-runtime
-    purpose: Stakes-free repeatable role-play; pre-mission confidence builder.
-    input: {user_id: string, scenario_id: string, partner_mode: [forgiving, natural_speed]}
-    output: {transcript: [turn], retries_used: int, scored: false, confidence_signal: string}
-    invariants:
-      - scored is always false (never a test)
-      - unlimited retries, no penalty
-      - must not gate real-mission progress
+        - name: rehearse_dialogue
+          status: v1
+          source_ref: PRD v0.4 §4.5   # pre-mission confidence surface, now in PRD
+          owner: content-runtime
+          purpose: Stakes-free repeatable role-play; pre-mission confidence builder.
+          input: {user_id: string, scenario_id: string, partner_mode: [forgiving, natural_speed]}
+          output: {transcript: [turn], retries_used: int, scored: false, confidence_signal: string}
+          invariants:
+            - scored is always false (never a test)
+            - unlimited retries, no penalty
+            - must not gate real-mission progress
 
-  - name: grade_mission
-    status: v1
-    owner: progression
-    purpose: Self-graded real-world outcome on the Competency Ladder + understood signal.
-    input: {user_id: string, scenario_id: string, rung: [not_yet, froze, survived_with_phone, survived_solo, handled_curveball, made_small_talk], understood: [first_try, repeated_once, not_understood]}
-    output: {accepted: bool, rung_recorded: string, is_failure: bool, trend: string}
-    invariants:
-      - rung=not_yet => is_failure=false, route back to rehearse_dialogue
-      - understood is a noisy confidence signal, not a score; no app-side ASR in v1
-      - self-report only; no automated/geolocation verification
+        - name: grade_mission
+          status: v1
+          owner: progression
+          purpose: Self-graded real-world outcome on the Competency Ladder + understood signal.
+          input: {user_id: string, scenario_id: string, rung: [not_yet, froze, survived_with_phone, survived_solo, handled_curveball, made_small_talk], understood: [first_try, repeated_once, not_understood]}
+          output: {accepted: bool, rung_recorded: string, is_failure: bool, trend: string}
+          invariants:
+            - rung=not_yet => is_failure=false, route back to rehearse_dialogue
+            - understood is a noisy confidence signal, not a score; no app-side ASR in v1
+            - self-report only; no automated/geolocation verification
 
-  - name: update_ladder
-    status: v1
-    owner: progression
-    purpose: Persist scenario rung; keep scenario re-servable (not retired).
-    output: {scenario_rung: string}
+        - name: update_ladder
+          status: v1
+          owner: progression
+          purpose: Persist scenario rung; keep scenario re-servable (not retired).
+          output: {scenario_rung: string}
 
-  - name: update_verb_mastery
-    status: v1
-    owner: progression
-    purpose: Fold drilled verbs into the GLOBAL shared pool so effort compounds.
-    output: {pool_updated: [{verb, mastery}], carries_to_future_scenarios: true}
-    invariants:
-      - mastery is global, never reset per-scenario
-      - LOOP: output feeds next resolve_scenario.missing_verbs
+        - name: update_verb_mastery
+          status: v1
+          owner: progression
+          purpose: Fold drilled verbs into the GLOBAL shared pool so effort compounds.
+          output: {pool_updated: [{verb, mastery}], carries_to_future_scenarios: true}
+          invariants:
+            - mastery is global, never reset per-scenario
+            - LOOP: output feeds next resolve_scenario.missing_verbs
 
-deferred_v2:
-  - app_side_pronunciation_grading   # ASR; v1 uses grade_mission.understood self-report
-  - proactive_personalization        # scenarios from user's real calendar/life
-  - community                        # shared libraries, leaderboards
+      deferred_v2:
+        - app_side_pronunciation_grading   # ASR; v1 uses grade_mission.understood self-report
+        - proactive_personalization        # scenarios from user's real calendar/life
+        - community                        # shared libraries, leaderboards
 
-global_invariants:
-  - never serve high-stakes content on the live path
-  - never require user-generation at the zero-verb cold start
-  - rehearsal is never scored; not_yet is never failure
-  - verb mastery is shared across all scenarios
-</script>
-</body>
+      global_invariants:
+        - never serve high-stakes content on the live path
+        - never require user-generation at the zero-verb cold start
+        - rehearsal is never scored; not_yet is never failure
+        - verb mastery is shared across all scenarios
+    </script>
+  </body>
 </html>

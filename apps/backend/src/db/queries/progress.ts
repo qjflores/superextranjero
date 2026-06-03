@@ -10,10 +10,7 @@ export interface Progress {
   updated_at: Date;
 }
 
-export const createProgress = async (
-  userId: string,
-  microScenarioId: string
-): Promise<void> => {
+export const createProgress = async (userId: string, microScenarioId: string): Promise<void> => {
   await query(
     'INSERT INTO user_micro_scenario_progress (user_id, micro_scenario_id) VALUES ($1, $2) ON CONFLICT DO NOTHING',
     [userId, microScenarioId]

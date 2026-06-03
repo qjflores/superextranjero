@@ -21,6 +21,7 @@ Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-s
 ### How to Use the Specs
 
 **When building a workstream:**
+
 1. Read the "Done when" criteria in ImplementationWorkstreams_v0.1.md
 2. Find the contract(s) it implements in InterfaceContracts_v0.1.html
 3. Study the contract's "Verify · output" block — this is your acceptance test
@@ -28,6 +29,7 @@ Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-s
 5. Code defensively; validate outputs against the contract
 
 **Example:** When implementing `seed_verb_pool`:
+
 - Contract: InterfaceContracts_v0.1.html, group A
 - Input schema: user_id, native_language, seed_target=20
 - Output schema: seeded_verbs[], micro_scenarios_completed, mode="recognition", pool_ready_for_full
@@ -37,6 +39,7 @@ Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-s
 ### Current Build: Foundations for J5 Cold-Start
 
 **Workstreams (in order):**
+
 - **F1:** Repo + CI + monorepo (RN client + modular backend)
 - **F2:** Data layer (Postgres schema including `micro_scenario`, `user.pool_seeded`)
 - **F3:** LLM Gateway (provider abstraction + guardrails) ⭐ load-bearing
@@ -54,6 +57,7 @@ Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-s
 **Don't assume. Don't hide confusion. Surface tradeoffs.**
 
 Before implementing:
+
 - State your assumptions explicitly. If uncertain, ask.
 - If multiple interpretations exist, present them - don't pick silently.
 - If a simpler approach exists, say so. Push back when warranted.
@@ -76,27 +80,58 @@ Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, sim
 **Touch only what you must. Clean up only your own mess.**
 
 When editing existing code:
+
 - Don't "improve" adjacent code, comments, or formatting.
 - Don't refactor things that aren't broken.
 - Match existing style, even if you'd do it differently.
 - If you notice unrelated dead code, mention it - don't delete it.
 
 When your changes create orphans:
+
 - Remove imports/variables/functions that YOUR changes made unused.
 - Don't remove pre-existing dead code unless asked.
 
 The test: Every changed line should trace directly to the user's request.
 
-## 4. Goal-Driven Execution
+## 4. Quality Checks Before Commit
+
+**Always run linting and formatting checks before committing code.**
+
+Before creating a commit:
+
+```bash
+# 1. Check code style and quality
+bun run lint
+
+# 2. Check formatting matches project style
+bun run format:check
+
+# 3. Fix any formatting issues
+bun run format
+
+# 4. Run type checking
+bun run type-check
+
+# 5. Run tests
+bun run test
+```
+
+If any check fails, fix the issue before committing. Don't commit code that fails linting, formatting, or tests. CI will catch it anyway, but fixing locally saves a round trip.
+
+**Exception:** Warnings are acceptable (ESLint shows 8 warnings for "Unexpected any" types—these are encouraged but not blocking).
+
+## 5. Goal-Driven Execution
 
 **Define success criteria. Loop until verified.**
 
 Transform tasks into verifiable goals:
+
 - "Add validation" → "Write tests for invalid inputs, then make them pass"
 - "Fix the bug" → "Write a test that reproduces it, then make it pass"
 - "Refactor X" → "Ensure tests pass before and after"
 
 For multi-step tasks, state a brief plan:
+
 ```
 1. [Step] → verify: [check]
 2. [Step] → verify: [check]

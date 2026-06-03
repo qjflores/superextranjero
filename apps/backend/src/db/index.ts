@@ -41,10 +41,9 @@ export interface QueryOptions {
   timeout?: number;
 }
 
-export const query = async <T extends any = any>(
+export const query = async <T extends Record<string, any> = Record<string, any>>(
   sql: string,
-  values?: any[],
-  options?: QueryOptions
+  values?: any[]
 ): Promise<QueryResult<T>> => {
   const p = getPool();
   try {

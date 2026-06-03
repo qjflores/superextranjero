@@ -18,7 +18,7 @@ export class Policy {
   }
 
   // Get the list of providers for a capability in preference order
-  getProvidersForCapability(capability: Capability): LLMProvider[] {
+  getProvidersForCapability(_capability: Capability): LLMProvider[] {
     // For now, all capabilities use the same provider list
     // In the future, this can be specialized per capability
     return [

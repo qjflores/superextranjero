@@ -40,10 +40,9 @@ export const runMigrations = async () => {
 
     for (const migration of migrations) {
       // Check if migration was already applied
-      const result = await client.query(
-        'SELECT id FROM schema_migrations WHERE name = $1',
-        [migration.name]
-      );
+      const result = await client.query('SELECT id FROM schema_migrations WHERE name = $1', [
+        migration.name,
+      ]);
 
       if (result.rows.length > 0) {
         console.info(`  ✓ ${migration.name} (already applied)`);
@@ -53,9 +52,7 @@ export const runMigrations = async () => {
       // Apply migration
       try {
         await client.query(migration.content);
-        await client.query('INSERT INTO schema_migrations (name) VALUES ($1)', [
-          migration.name,
-        ]);
+        await client.query('INSERT INTO schema_migrations (name) VALUES ($1)', [migration.name]);
         console.info(`  ✓ ${migration.name}`);
       } catch (err) {
         console.error(`  ✗ ${migration.name}:`, err);

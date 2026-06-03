@@ -28,6 +28,9 @@ build/
 coverage/
 .nyc_output/
 
+# Linting & Formatting
+.eslintcache
+
 # Logs
 logs/
 *.log
@@ -54,3 +57,7 @@ web-build/
 
 # Node
 .node_modules/
+
+# Package managers
+bun.lock
+

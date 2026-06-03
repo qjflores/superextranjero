@@ -23,33 +23,24 @@ export const createVerb = async (
 };
 
 export const findVerbById = async (verbId: number): Promise<Verb | null> => {
-  const result = await query<Verb>(
-    'SELECT * FROM verb WHERE verb_id = $1',
-    [verbId]
-  );
+  const result = await query<Verb>('SELECT * FROM verb WHERE verb_id = $1', [verbId]);
   return result.rows[0] || null;
 };
 
 export const findVerbByInfinitive = async (infinitive: string): Promise<Verb | null> => {
-  const result = await query<Verb>(
-    'SELECT * FROM verb WHERE infinitive = $1',
-    [infinitive]
-  );
+  const result = await query<Verb>('SELECT * FROM verb WHERE infinitive = $1', [infinitive]);
   return result.rows[0] || null;
 };
 
 export const findAllVerbs = async (): Promise<Verb[]> => {
-  const result = await query<Verb>(
-    'SELECT * FROM verb ORDER BY frequency_rank ASC'
-  );
+  const result = await query<Verb>('SELECT * FROM verb ORDER BY frequency_rank ASC');
   return result.rows;
 };
 
 export const findVerbsByFrequencyRank = async (limit: number = 20): Promise<Verb[]> => {
-  const result = await query<Verb>(
-    'SELECT * FROM verb ORDER BY frequency_rank ASC LIMIT $1',
-    [limit]
-  );
+  const result = await query<Verb>('SELECT * FROM verb ORDER BY frequency_rank ASC LIMIT $1', [
+    limit,
+  ]);
   return result.rows;
 };
 
@@ -64,10 +55,7 @@ export const bulkInsertVerbs = async (
   if (verbs.length === 0) return 0;
 
   const values = verbs
-    .map(
-      (v, i) =>
-        `($${i * 4 + 1}, $${i * 4 + 2}, $${i * 4 + 3}, $${i * 4 + 4})`
-    )
+    .map((v, i) => `($${i * 4 + 1}, $${i * 4 + 2}, $${i * 4 + 3}, $${i * 4 + 4})`)
     .join(',');
 
   const params = verbs.flatMap((v) => [
@@ -85,8 +73,6 @@ export const bulkInsertVerbs = async (
 };
 
 export const countVerbs = async (): Promise<number> => {
-  const result = await query<{ count: string }>(
-    'SELECT COUNT(*) as count FROM verb'
-  );
+  const result = await query<{ count: string }>('SELECT COUNT(*) as count FROM verb');
   return parseInt(result.rows[0].count, 10);
 };

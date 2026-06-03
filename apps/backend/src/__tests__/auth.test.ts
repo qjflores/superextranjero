@@ -5,7 +5,6 @@ describe('Auth Routes', () => {
   describe('POST /auth/register', () => {
     test('registers a new user with valid email and password', async () => {
       const email = 'test@example.com';
-      const password = 'password123';
 
       // In integration test, would call actual endpoint
       // For unit test, verify JWT encoding/decoding works

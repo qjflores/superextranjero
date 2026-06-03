@@ -66,10 +66,7 @@ export const bulkInsertMicroScenarios = async (
   if (scenarios.length === 0) return 0;
 
   const values = scenarios
-    .map(
-      (_, i) =>
-        `($${i * 5 + 1}, $${i * 5 + 2}, $${i * 5 + 3}, $${i * 5 + 4}, $${i * 5 + 5})`
-    )
+    .map((_, i) => `($${i * 5 + 1}, $${i * 5 + 2}, $${i * 5 + 3}, $${i * 5 + 4}, $${i * 5 + 5})`)
     .join(',');
 
   const params = scenarios.flatMap((s) => [
@@ -88,8 +85,6 @@ export const bulkInsertMicroScenarios = async (
 };
 
 export const countMicroScenarios = async (): Promise<number> => {
-  const result = await query<{ count: string }>(
-    'SELECT COUNT(*) as count FROM micro_scenario'
-  );
+  const result = await query<{ count: string }>('SELECT COUNT(*) as count FROM micro_scenario');
   return parseInt(result.rows[0].count, 10);
 };

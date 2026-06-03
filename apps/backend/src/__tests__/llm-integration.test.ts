@@ -1,6 +1,6 @@
 import { LLMGateway, Capability } from '../llm/index.js';
 import { MockProvider } from '../llm/providers/mock.js';
-import { AnthropicProvider } from '../llm/providers/anthropic.js';
+import { CapabilityResponse } from '../llm/capabilities.js';
 
 describe('LLM Gateway Integration', () => {
   let gateway: LLMGateway;
@@ -85,7 +85,11 @@ describe('LLM Gateway Integration', () => {
   test('falls back when primary provider unavailable', async () => {
     // Create a provider that always fails
     class FailingProvider extends MockProvider {
-      override async generateMicroScenarioIntro() {
+      override async generateMicroScenarioIntro(
+        _verb: string,
+        _nativeLanguage: string,
+        _difficultyLevel: number
+      ): Promise<CapabilityResponse> {
         throw new Error('Provider unavailable');
       }
     }

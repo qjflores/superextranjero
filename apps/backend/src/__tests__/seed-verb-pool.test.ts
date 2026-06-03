@@ -1,18 +1,3 @@
-import {
-  findVerbsByFrequencyRank,
-  countVerbs,
-} from '../db/queries/verb.js';
-import {
-  createProgress,
-  findProgress,
-  updateProgress,
-  countUserCompletedScenarios,
-} from '../db/queries/progress.js';
-import {
-  bulkCreateVerbMastery,
-  findUserVerbMastery,
-  createVerbMastery,
-} from '../db/queries/verb-mastery.js';
 import { LLMGateway, Capability } from '../llm/index.js';
 import { MockProvider } from '../llm/providers/mock.js';
 
@@ -190,12 +175,8 @@ describe('seed_verb_pool Contract', () => {
       };
 
       // Validate structure
-      expect(response.seeded_verbs).toEqual(
-        expect.arrayContaining(['ser', 'estar', 'tener'])
-      );
-      expect(response.micro_scenarios_completed).toEqual(
-        expect.any(Number)
-      );
+      expect(response.seeded_verbs).toEqual(expect.arrayContaining(['ser', 'estar', 'tener']));
+      expect(response.micro_scenarios_completed).toEqual(expect.any(Number));
       expect(response.mode).toBe('recognition');
       expect(response.pool_ready_for_full).toEqual(expect.any(Boolean));
     });

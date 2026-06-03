@@ -74,15 +74,10 @@ export const countUserVerbMastery = async (userId: string): Promise<number> => {
   return parseInt(result.rows[0].count, 10);
 };
 
-export const bulkCreateVerbMastery = async (
-  userId: string,
-  verbIds: number[]
-): Promise<number> => {
+export const bulkCreateVerbMastery = async (userId: string, verbIds: number[]): Promise<number> => {
   if (verbIds.length === 0) return 0;
 
-  const values = verbIds
-    .map((_, i) => `($1, $${i + 2})`)
-    .join(',');
+  const values = verbIds.map((_, i) => `($1, $${i + 2})`).join(',');
   const params = [userId, ...verbIds];
 
   const result = await query(

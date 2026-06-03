@@ -61,9 +61,7 @@ export const LoginScreen: React.FC = () => {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>Survival Spanish</Text>
-        <Text style={styles.subtitle}>
-          {isRegister ? 'Create Account' : 'Sign In'}
-        </Text>
+        <Text style={styles.subtitle}>{isRegister ? 'Create Account' : 'Sign In'}</Text>
       </View>
 
       {/* Form */}
@@ -119,9 +117,7 @@ export const LoginScreen: React.FC = () => {
           {auth.isLoading ? (
             <ActivityIndicator color="#fff" />
           ) : (
-            <Text style={styles.buttonText}>
-              {isRegister ? 'Create Account' : 'Sign In'}
-            </Text>
+            <Text style={styles.buttonText}>{isRegister ? 'Create Account' : 'Sign In'}</Text>
           )}
         </TouchableOpacity>
       </View>
@@ -132,9 +128,7 @@ export const LoginScreen: React.FC = () => {
           {isRegister ? 'Already have an account?' : "Don't have an account?"}
         </Text>
         <TouchableOpacity onPress={toggleMode} disabled={auth.isLoading}>
-          <Text style={styles.link}>
-            {isRegister ? 'Sign In' : 'Create Account'}
-          </Text>
+          <Text style={styles.link}>{isRegister ? 'Sign In' : 'Create Account'}</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

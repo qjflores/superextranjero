@@ -18,18 +18,12 @@ export const createUser = async (email: string, passwordHash?: string): Promise<
 };
 
 export const findUserByEmail = async (email: string): Promise<User | null> => {
-  const result = await query<User>(
-    'SELECT * FROM "user" WHERE email = $1',
-    [email]
-  );
+  const result = await query<User>('SELECT * FROM "user" WHERE email = $1', [email]);
   return result.rows[0] || null;
 };
 
 export const findUserById = async (userId: string): Promise<User | null> => {
-  const result = await query<User>(
-    'SELECT * FROM "user" WHERE user_id = $1',
-    [userId]
-  );
+  const result = await query<User>('SELECT * FROM "user" WHERE user_id = $1', [userId]);
   return result.rows[0] || null;
 };
 
@@ -41,15 +35,11 @@ export const updateUserPoolSeeded = async (userId: string): Promise<void> => {
 };
 
 export const getAllUsers = async (): Promise<User[]> => {
-  const result = await query<User>(
-    'SELECT * FROM "user" ORDER BY created_at DESC'
-  );
+  const result = await query<User>('SELECT * FROM "user" ORDER BY created_at DESC');
   return result.rows;
 };
 
 export const countUsers = async (): Promise<number> => {
-  const result = await query<{ count: string }>(
-    'SELECT COUNT(*) as count FROM "user"'
-  );
+  const result = await query<{ count: string }>('SELECT COUNT(*) as count FROM "user"');
   return parseInt(result.rows[0].count, 10);
 };

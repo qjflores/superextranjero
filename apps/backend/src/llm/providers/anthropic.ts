@@ -37,8 +37,7 @@ Format: Plain text, single sentence or two.`;
       messages: [{ role: 'user', content: prompt }],
     });
 
-    const text =
-      response.content[0].type === 'text' ? response.content[0].text : '';
+    const text = response.content[0].type === 'text' ? response.content[0].text : '';
 
     return {
       text: text.trim(),

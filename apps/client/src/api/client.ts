@@ -1,7 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 
-const baseURL =
-  process.env.EXPO_PUBLIC_API_BASE_URL || 'http://localhost:4000';
+const baseURL = process.env.EXPO_PUBLIC_API_BASE_URL || 'http://localhost:4000';
 
 export class APIClient {
   private client: AxiosInstance;
@@ -39,12 +38,18 @@ export class APIClient {
     this.token = null;
   }
 
-  async register(email: string, password: string): Promise<{userId: string; email: string; token: string}> {
+  async register(
+    email: string,
+    password: string
+  ): Promise<{ userId: string; email: string; token: string }> {
     const response = await this.client.post('/auth/register', { email, password });
     return response.data.data;
   }
 
-  async login(email: string, password: string): Promise<{userId: string; email: string; token: string}> {
+  async login(
+    email: string,
+    password: string
+  ): Promise<{ userId: string; email: string; token: string }> {
     const response = await this.client.post('/auth/login', { email, password });
     return response.data.data;
   }
@@ -53,7 +58,7 @@ export class APIClient {
     verbTarget: string,
     nativeLanguage: string,
     difficultyLevel?: number
-  ): Promise<{text: string; verbTarget: string; level: number; guardrailPassed: boolean}> {
+  ): Promise<{ text: string; verbTarget: string; level: number; guardrailPassed: boolean }> {
     const response = await this.client.post('/llm/generate', {
       capability: 'generate_micro_scenario_intro',
       verbTarget,
@@ -63,17 +68,20 @@ export class APIClient {
     return response.data.data;
   }
 
-  async hello(): Promise<{message: string}> {
+  async hello(): Promise<{ message: string }> {
     const response = await this.client.get('/api/hello');
     return response.data;
   }
 
-  async healthCheck(): Promise<{status: string; timestamp: string}> {
+  async healthCheck(): Promise<{ status: string; timestamp: string }> {
     const response = await this.client.get('/health');
     return response.data.data;
   }
 
-  async seedVerbPool(nativeLanguage: string, seedTarget: number = 20): Promise<{
+  async seedVerbPool(
+    nativeLanguage: string,
+    seedTarget: number = 20
+  ): Promise<{
     seeded_verbs: string[];
     micro_scenarios_completed: number;
     mode: 'recognition';

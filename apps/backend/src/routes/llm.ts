@@ -1,16 +1,11 @@
-import { Router, Request, Response } from 'express';
-import {
-  LLMGateway,
-  Capability,
-  CapabilityRequest,
-  GuardrailError,
-} from '../llm/index.js';
+import { Router, Request, Response, type Router as ExpressRouter } from 'express';
+import { LLMGateway, Capability, CapabilityRequest, GuardrailError } from '../llm/index.js';
 import { MockProvider } from '../llm/providers/mock.js';
 import { OpenAIProvider } from '../llm/providers/openai.js';
 import { AnthropicProvider } from '../llm/providers/anthropic.js';
 import { config } from '../config/env.js';
 
-const router = Router();
+const router: ExpressRouter = Router();
 
 // Initialize gateway with providers
 const primaryProvider =

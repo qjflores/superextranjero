@@ -28,6 +28,7 @@ cp apps/client/.env.example apps/client/.env
 Run backend and client in separate terminals:
 
 **Terminal 1: Backend**
+
 ```bash
 bun run dev:backend
 # Server runs on http://localhost:4000
@@ -35,6 +36,7 @@ bun run dev:backend
 ```
 
 **Terminal 2: Client**
+
 ```bash
 bun run dev:client
 # Opens Expo DevTools
@@ -80,10 +82,12 @@ superextranjero/
 ## Scripts
 
 ### Development
+
 - `bun run dev:backend` — Start backend dev server (tsx watch)
 - `bun run dev:client` — Start Expo client
 
 ### Quality
+
 - `bun run lint` — Run ESLint on all workspaces
 - `bun run lint:fix` — Fix linting issues
 - `bun run format` — Format code with Prettier
@@ -93,6 +97,7 @@ superextranjero/
 - `bun run test:watch` — Run tests in watch mode
 
 ### Build
+
 - `bun run build` — Build all workspaces for production
 - `cd apps/backend && bun run build` — Build backend only
 - `cd apps/client && bun run build` — Build client web version
@@ -112,6 +117,7 @@ See `/docs/specs/` for the complete specification suite:
 **F1 Status:** ✅ Complete
 
 This foundation establishes:
+
 - ✅ Yarn v4 monorepo with workspaces
 - ✅ Root-level ESLint, Prettier, TypeScript configuration
 - ✅ Express backend with hello-world endpoints
@@ -135,6 +141,7 @@ The monorepo is **done when:**
 ### Next Workstream: F2 (Data Layer)
 
 Once F1 is merged, F2 will add:
+
 - PostgreSQL schema and migrations
 - `user`, `verb`, `micro_scenario`, `user_micro_scenario_progress` tables
 - Database connection pool in backend
@@ -155,7 +162,9 @@ Then F3 (LLM Gateway), F4 (Auth), F5 (Client state), and finally `seed_verb_pool
 ## Troubleshooting
 
 ### Port Already in Use
+
 If port 4000 is in use:
+
 ```bash
 # macOS/Linux
 lsof -i :4000
@@ -167,6 +176,7 @@ taskkill /PID <PID> /F
 ```
 
 ### Yarn Cache Issues
+
 ```bash
 yarn cache clean
 rm -rf node_modules .yarn/cache
@@ -174,6 +184,7 @@ yarn install
 ```
 
 ### Expo Issues
+
 ```bash
 expo start --clear
 # Or reset cache: expo start -c

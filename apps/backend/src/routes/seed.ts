@@ -1,29 +1,19 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, type Router as ExpressRouter } from 'express';
 import { requireAuth } from '../middleware/auth.js';
 import { findUserById, updateUserPoolSeeded } from '../db/queries/user.js';
-import {
-  findVerbsByFrequencyRank,
-  countVerbs,
-} from '../db/queries/verb.js';
-import {
-  findMicroScenariosByVerbId,
-  createMicroScenario,
-} from '../db/queries/micro-scenario.js';
+import { findVerbsByFrequencyRank } from '../db/queries/verb.js';
+import { findMicroScenariosByVerbId, createMicroScenario } from '../db/queries/micro-scenario.js';
 import {
   createProgress,
   findProgress,
   updateProgress,
   countUserCompletedScenarios,
 } from '../db/queries/progress.js';
-import {
-  bulkCreateVerbMastery,
-  findUserVerbMastery,
-} from '../db/queries/verb-mastery.js';
+import { bulkCreateVerbMastery, findUserVerbMastery } from '../db/queries/verb-mastery.js';
 import { LLMGateway, Capability } from '../llm/index.js';
 import { MockProvider } from '../llm/providers/mock.js';
-import { config } from '../config/env.js';
 
-const router = Router();
+const router: ExpressRouter = Router();
 
 interface SeedVerbPoolRequest {
   nativeLanguage: string;
@@ -55,7 +45,10 @@ const llmGateway = new LLMGateway({
 router.post(
   '/seed-verb-pool',
   requireAuth,
-  async (req: Request<unknown, unknown, SeedVerbPoolRequest>, res: Response<SeedVerbPoolResponse>) => {
+  async (
+    req: Request<unknown, unknown, SeedVerbPoolRequest>,
+    res: Response<SeedVerbPoolResponse>
+  ) => {
     try {
       const userId = req.userId!;
       const { nativeLanguage, seedTarget = 20 } = req.body;
@@ -148,10 +141,7 @@ router.post(
               ];
             } catch (llmError) {
               // If LLM fails, continue with empty scenario list
-              console.warn(
-                `Failed to generate scenario for verb ${verb.infinitive}:`,
-                llmError
-              );
+              console.warn(`Failed to generate scenario for verb ${verb.infinitive}:`, llmError);
               // Don't fail the whole seeding; just skip this verb
               continue;
             }
@@ -192,7 +182,7 @@ router.post(
       // Count completed scenarios
       const completedCount = await countUserCompletedScenarios(userId);
 
-      const poolReadyForFull = seededVerbIds.length >= (seedTarget * 0.75); // 75% threshold
+      const poolReadyForFull = seededVerbIds.length >= seedTarget * 0.75; // 75% threshold
 
       return res.status(201).json({
         data: {
@@ -216,46 +206,42 @@ router.post(
 );
 
 // GET /seed-verb-pool/status - Check user's seeding status
-router.get(
-  '/seed-verb-pool/status',
-  requireAuth,
-  async (_req: Request, res: Response) => {
-    try {
-      const userId = _req.userId!;
+router.get('/seed-verb-pool/status', requireAuth, async (_req: Request, res: Response) => {
+  try {
+    const userId = _req.userId!;
 
-      const user = await findUserById(userId);
-      if (!user) {
-        return res.status(404).json({
-          error: {
-            status: 404,
-            message: 'User not found',
-            code: 'E_USER_NOT_FOUND',
-          },
-        });
-      }
-
-      const seededVerbs = await findUserVerbMastery(userId);
-      const completedScenarios = await countUserCompletedScenarios(userId);
-
-      return res.json({
-        data: {
-          pool_seeded: user.pool_seeded,
-          seeded_verbs_count: seededVerbs.length,
-          completed_scenarios: completedScenarios,
-          ready_for_full: user.pool_seeded && seededVerbs.length >= 15,
-        },
-      });
-    } catch (error) {
-      console.error('Seeding status error:', error);
-      return res.status(500).json({
+    const user = await findUserById(userId);
+    if (!user) {
+      return res.status(404).json({
         error: {
-          status: 500,
-          message: 'Failed to check seeding status',
-          code: 'E_INTERNAL',
+          status: 404,
+          message: 'User not found',
+          code: 'E_USER_NOT_FOUND',
         },
       });
     }
+
+    const seededVerbs = await findUserVerbMastery(userId);
+    const completedScenarios = await countUserCompletedScenarios(userId);
+
+    return res.json({
+      data: {
+        pool_seeded: user.pool_seeded,
+        seeded_verbs_count: seededVerbs.length,
+        completed_scenarios: completedScenarios,
+        ready_for_full: user.pool_seeded && seededVerbs.length >= 15,
+      },
+    });
+  } catch (error) {
+    console.error('Seeding status error:', error);
+    return res.status(500).json({
+      error: {
+        status: 500,
+        message: 'Failed to check seeding status',
+        code: 'E_INTERNAL',
+      },
+    });
   }
-);
+});
 
 export default router;

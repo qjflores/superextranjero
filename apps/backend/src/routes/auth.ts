@@ -1,14 +1,10 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, type Router as ExpressRouter } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { config } from '../config/env.js';
-import {
-  createUser,
-  findUserByEmail,
-  updateUserPoolSeeded,
-} from '../db/queries/user.js';
+import { createUser, findUserByEmail } from '../db/queries/user.js';
 
-const router = Router();
+const router: ExpressRouter = Router();
 
 interface RegisterRequest {
   email: string;
@@ -74,7 +70,7 @@ router.post(
       const passwordHash = await bcrypt.hash(password, 10);
       const userId = await createUser(email, passwordHash);
 
-      const token = jwt.sign({ userId, email }, config.jwtSecret, {
+      const token = jwt.sign({ userId, email }, config.jwtSecret!, {
         expiresIn: '7d',
       });
 
@@ -116,7 +112,7 @@ router.post(
       }
 
       const user = await findUserByEmail(email);
-      if (!user) {
+      if (!user || !user.password_hash) {
         return res.status(401).json({
           error: {
             status: 401,
@@ -137,7 +133,7 @@ router.post(
         });
       }
 
-      const token = jwt.sign({ userId: user.user_id, email: user.email }, config.jwtSecret, {
+      const token = jwt.sign({ userId: user.user_id, email: user.email }, config.jwtSecret!, {
         expiresIn: '7d',
       });
 

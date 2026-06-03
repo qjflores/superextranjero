@@ -1,11 +1,6 @@
-import {
-  Capability,
-  CapabilityRequest,
-  CapabilityResponse,
-} from './capabilities.js';
+import { Capability, CapabilityRequest, CapabilityResponse } from './capabilities.js';
 import { Guardrails, GuardrailError } from './guardrails.js';
 import { Policy, PolicyConfig } from './policy.js';
-import { LLMProvider } from './providers/index.js';
 
 export class LLMGateway {
   private policy: Policy;
@@ -62,9 +57,7 @@ export class LLMGateway {
     }
 
     // All providers failed
-    throw new Error(
-      `${GuardrailError.PROVIDER_FAILED}: ${lastError?.message || 'Unknown error'}`
-    );
+    throw new Error(`${GuardrailError.PROVIDER_FAILED}: ${lastError?.message || 'Unknown error'}`);
   }
 
   getGuardrails(): Guardrails {
@@ -74,5 +67,4 @@ export class LLMGateway {
 
 export { Capability, CapabilityRequest, CapabilityResponse };
 export { Guardrails, GuardrailError } from './guardrails.js';
-export { LLMProvider } from './providers/index.js';
 export { Policy, PolicyConfig } from './policy.js';

@@ -16,9 +16,7 @@ export const HomeScreen: React.FC = () => {
       const res = await apiClient.hello();
       setResponse(res.message);
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'Failed to call backend'
-      );
+      setError(err instanceof Error ? err.message : 'Failed to call backend');
     } finally {
       setLoading(false);
     }
@@ -34,19 +32,11 @@ export const HomeScreen: React.FC = () => {
       <View style={styles.content}>
         <Text style={styles.subtitle}>Progress</Text>
 
-        {response && (
-          <Text style={styles.response}>
-            Backend says: {response}
-          </Text>
-        )}
+        {response && <Text style={styles.response}>Backend says: {response}</Text>}
 
         {error && <Text style={styles.error}>Error: {error}</Text>}
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={callBackend}
-          disabled={loading}
-        >
+        <TouchableOpacity style={styles.button} onPress={callBackend} disabled={loading}>
           {loading ? (
             <ActivityIndicator color="#fff" />
           ) : (
@@ -55,10 +45,7 @@ export const HomeScreen: React.FC = () => {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity
-        style={[styles.button, styles.logoutButton]}
-        onPress={logout}
-      >
+      <TouchableOpacity style={[styles.button, styles.logoutButton]} onPress={logout}>
         <Text style={styles.buttonText}>Sign Out</Text>
       </TouchableOpacity>
     </View>
