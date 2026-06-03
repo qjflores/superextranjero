@@ -6,6 +6,7 @@ import { authMiddleware } from './middleware/auth.js';
 import healthRoutes from './routes/health.js';
 import authRoutes from './routes/auth.js';
 import helloRoutes from './routes/hello.js';
+import llmRoutes from './routes/llm.js';
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(authMiddleware);
 app.use('/health', healthRoutes);
 app.use('/auth', authRoutes);
 app.use('/api', helloRoutes);
+app.use('/', llmRoutes);
 
 // 404 handler
 app.use((_req, res) => {
