@@ -1,0 +1,22 @@
+[
+  { "infinitive": "ser", "frequency_rank": 1, "difficulty_level": 2, "en_translation": "to be (permanent)" },
+  { "infinitive": "estar", "frequency_rank": 2, "difficulty_level": 2, "en_translation": "to be (location/state)" },
+  { "infinitive": "tener", "frequency_rank": 3, "difficulty_level": 1, "en_translation": "to have" },
+  { "infinitive": "hacer", "frequency_rank": 4, "difficulty_level": 1, "en_translation": "to do/make" },
+  { "infinitive": "ir", "frequency_rank": 5, "difficulty_level": 1, "en_translation": "to go" },
+  { "infinitive": "poder", "frequency_rank": 6, "difficulty_level": 1, "en_translation": "can/to be able" },
+  { "infinitive": "decir", "frequency_rank": 7, "difficulty_level": 1, "en_translation": "to say/tell" },
+  { "infinitive": "dar", "frequency_rank": 8, "difficulty_level": 1, "en_translation": "to give" },
+  { "infinitive": "saber", "frequency_rank": 9, "difficulty_level": 1, "en_translation": "to know" },
+  { "infinitive": "querer", "frequency_rank": 10, "difficulty_level": 1, "en_translation": "to want" },
+  { "infinitive": "llegar", "frequency_rank": 11, "difficulty_level": 1, "en_translation": "to arrive" },
+  { "infinitive": "pasar", "frequency_rank": 12, "difficulty_level": 1, "en_translation": "to pass/happen" },
+  { "infinitive": "deber", "frequency_rank": 13, "difficulty_level": 1, "en_translation": "must/to owe" },
+  { "infinitive": "poner", "frequency_rank": 14, "difficulty_level": 1, "en_translation": "to put" },
+  { "infinitive": "parecer", "frequency_rank": 15, "difficulty_level": 1, "en_translation": "to seem" },
+  { "infinitive": "dejar", "frequency_rank": 16, "difficulty_level": 1, "en_translation": "to leave/let" },
+  { "infinitive": "seguir", "frequency_rank": 17, "difficulty_level": 1, "en_translation": "to follow/continue" },
+  { "infinitive": "encontrar", "frequency_rank": 18, "difficulty_level": 1, "en_translation": "to find/meet" },
+  { "infinitive": "llamar", "frequency_rank": 19, "difficulty_level": 1, "en_translation": "to call/name" },
+  { "infinitive": "venir", "frequency_rank": 20, "difficulty_level": 1, "en_translation": "to come" }
+]
