@@ -1,0 +1,9 @@
+{
+  "extends": ["../../.eslintrc.json", "@react-native-community"],
+  "env": {
+    "react-native/react-native": true
+  },
+  "rules": {
+    "react-native/no-unused-styles": "warn"
+  }
+}

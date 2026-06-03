@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: backend
+    ports:
+      - '4000:4000'
+    environment:
+      - NODE_ENV=development
+      - PORT=4000
+      - JWT_SECRET=dev-secret
+    volumes:
+      - ./apps/backend/src:/app/apps/backend/src
+    command: cd apps/backend && bun run dev
+
+  # Note: Client is not included here as it requires an emulator/browser
+  # Run locally: cd apps/client && bun start
