@@ -8,204 +8,174 @@ import {
   StyleSheet,
 } from 'react-native';
 import { useAuth } from '../state/AuthContext.js';
-import apiClient from '../api/client.js';
-
-const CORE_VERBS = [
-  'ser',
-  'estar',
-  'tener',
-  'hacer',
-  'ir',
-  'poder',
-  'decir',
-  'dar',
-  'saber',
-  'querer',
-  'llegar',
-  'pasar',
-  'deber',
-  'poner',
-  'parecer',
-  'dejar',
-  'seguir',
-  'encontrar',
-  'llamar',
-  'venir',
-];
-
-interface Scenario {
-  verb: string;
-  text: string;
-  level: number;
-  completed: boolean;
-}
+import { useSeedingState } from '../state/useSeedingState.js';
 
 export const SeedingScreen: React.FC<{ onComplete?: () => void }> = ({ onComplete }) => {
   const { auth } = useAuth();
-  const [scenarios, setScenarios] = useState<Scenario[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [isLoadingScenario, setIsLoadingScenario] = useState(false);
+  const { seeding, seedPool, checkStatus } = useSeedingState();
+  const [startTime, setStartTime] = useState<number | null>(null);
 
   useEffect(() => {
-    loadScenarios();
+    initializeSeeding();
   }, []);
 
-  const loadScenarios = async () => {
-    setLoading(true);
+  const initializeSeeding = async () => {
     try {
-      const initialScenarios = CORE_VERBS.map((verb) => ({
-        verb,
-        text: '',
-        level: 1,
-        completed: false,
-      }));
-      setScenarios(initialScenarios);
+      // Check if already seeded
+      await checkStatus();
 
-      // Load first scenario
-      if (initialScenarios.length > 0) {
-        loadScenarioText(initialScenarios[0]);
+      if (!seeding.isComplete) {
+        // Start seeding process
+        setStartTime(Date.now());
+        await seedPool('en', 20);
       }
-    } catch (err) {
-      setError('Failed to load scenarios');
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      console.error('Failed to initialize seeding:', error);
     }
   };
 
-  const loadScenarioText = async (scenario: Scenario) => {
-    setIsLoadingScenario(true);
-    try {
-      const response = await apiClient.generateMicroScenarioIntro(
-        scenario.verb,
-        'en',
-        scenario.level
-      );
-
-      setScenarios((prev) =>
-        prev.map((s) =>
-          s.verb === scenario.verb
-            ? { ...s, text: response.text }
-            : s
-        )
-      );
-    } catch (err) {
-      console.error('Failed to load scenario text:', err);
-      // Use fallback text
-      setScenarios((prev) =>
-        prev.map((s) =>
-          s.verb === scenario.verb
-            ? { ...s, text: `Learn the verb "${scenario.verb}" in context.` }
-            : s
-        )
-      );
-    } finally {
-      setIsLoadingScenario(false);
-    }
-  };
-
-  const handleRecognized = async () => {
-    const updatedScenarios = [...scenarios];
-    updatedScenarios[currentIndex] = {
-      ...updatedScenarios[currentIndex],
-      completed: true,
-    };
-    setScenarios(updatedScenarios);
-
-    if (currentIndex < scenarios.length - 1) {
-      const nextIndex = currentIndex + 1;
-      setCurrentIndex(nextIndex);
-      loadScenarioText(updatedScenarios[nextIndex]);
-    } else {
-      // All scenarios completed
+  const handleComplete = () => {
+    if (seeding.readyForFull) {
       onComplete?.();
     }
   };
 
-  const currentScenario = scenarios[currentIndex];
-  const completedCount = scenarios.filter((s) => s.completed).length;
-  const progress = scenarios.length > 0 ? (completedCount / scenarios.length) * 100 : 0;
+  const completionPercentage =
+    seeding.seededVerbs.length > 0
+      ? (seeding.completedScenarios / seeding.seededVerbs.length) * 100
+      : 0;
 
-  if (loading) {
+  // Show completion screen when done
+  if (seeding.isComplete && seeding.readyForFull) {
     return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color="#0066cc" />
-      </View>
-    );
-  }
-
-  if (!currentScenario) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.error}>No scenarios available</Text>
-      </View>
-    );
-  }
-
-  return (
-    <ScrollView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.title}>Learn Spanish Verbs</Text>
-        <Text style={styles.subtitle}>
-          {completedCount} of {scenarios.length} verbs learned
-        </Text>
-      </View>
-
-      {/* Progress Bar */}
-      <View style={styles.progressContainer}>
-        <View style={[styles.progressBar, { width: `${progress}%` }]} />
-      </View>
-
-      {/* Current Scenario */}
-      <View style={styles.scenarioContainer}>
-        <Text style={styles.verbLabel}>Verb: {currentScenario.verb}</Text>
-
-        {isLoadingScenario ? (
-          <ActivityIndicator size="small" color="#0066cc" style={styles.loading} />
-        ) : (
-          <Text style={styles.scenarioText}>
-            {currentScenario.text || `Learn how to use "${currentScenario.verb}"`}
+      <ScrollView style={styles.container}>
+        <View style={styles.completionContainer}>
+          <Text style={styles.completionTitle}>🎉</Text>
+          <Text style={styles.completionHeading}>Pool Seeded!</Text>
+          <Text style={styles.completionSubtitle}>
+            You've learned {seeding.completedScenarios} core Spanish verbs
           </Text>
-        )}
 
-        <View style={styles.actions}>
+          <View style={styles.statsContainer}>
+            <View style={styles.stat}>
+              <Text style={styles.statNumber}>{seeding.seededVerbs.length}</Text>
+              <Text style={styles.statLabel}>Verbs Learned</Text>
+            </View>
+            <View style={styles.stat}>
+              <Text style={styles.statNumber}>
+                {seeding.completedScenarios}
+              </Text>
+              <Text style={styles.statLabel}>Scenarios</Text>
+            </View>
+          </View>
+
+          {seeding.seededVerbs.length > 0 && (
+            <View style={styles.verbsContainer}>
+              <Text style={styles.verbsTitle}>Your Verbs:</Text>
+              <View style={styles.verbsList}>
+                {seeding.seededVerbs.map((verb) => (
+                  <View key={verb} style={styles.verbBadge}>
+                    <Text style={styles.verbBadgeText}>{verb}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
+
           <TouchableOpacity
             style={[styles.button, styles.primaryButton]}
-            onPress={handleRecognized}
-            disabled={isLoadingScenario}
+            onPress={handleComplete}
           >
-            <Text style={styles.buttonText}>I Recognize It</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.button, styles.secondaryButton]}
-            onPress={() => loadScenarioText(currentScenario)}
-            disabled={isLoadingScenario}
-          >
-            <Text style={styles.buttonTextSecondary}>Replay</Text>
+            <Text style={styles.buttonText}>Continue to App</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
+    );
+  }
 
-      {/* Completed Verbs */}
-      {completedCount > 0 && (
-        <View style={styles.completedContainer}>
-          <Text style={styles.completedTitle}>Learned:</Text>
-          <View style={styles.verbsList}>
-            {scenarios
-              .filter((s) => s.completed)
-              .map((s) => (
-                <View key={s.verb} style={styles.verbBadge}>
-                  <Text style={styles.verbBadgeText}>{s.verb}</Text>
+  // Show loading/seeding screen
+  return (
+    <ScrollView style={styles.container}>
+      <View style={styles.seedingContainer}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Learning Spanish Verbs</Text>
+          <Text style={styles.subtitle}>
+            Building your verb pool in recognition mode
+          </Text>
+        </View>
+
+        {seeding.isLoading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#0066cc" />
+            <Text style={styles.loadingText}>Preparing your learning journey...</Text>
+          </View>
+        ) : null}
+
+        {/* Progress */}
+        <View style={styles.progressSection}>
+          <View style={styles.progressHeader}>
+            <Text style={styles.progressLabel}>Progress</Text>
+            <Text style={styles.progressPercent}>
+              {Math.round(completionPercentage)}%
+            </Text>
+          </View>
+          <View style={styles.progressContainer}>
+            <View
+              style={[
+                styles.progressBar,
+                { width: `${completionPercentage}%` },
+              ]}
+            />
+          </View>
+
+          {seeding.completedScenarios > 0 && (
+            <Text style={styles.progressText}>
+              {seeding.completedScenarios} scenario{seeding.completedScenarios !== 1 ? 's' : ''} recognized
+            </Text>
+          )}
+        </View>
+
+        {/* Seeded Verbs */}
+        {seeding.seededVerbs.length > 0 && (
+          <View style={styles.seededContainer}>
+            <Text style={styles.seededTitle}>Verbs Learned So Far:</Text>
+            <View style={styles.seededList}>
+              {seeding.seededVerbs.slice(0, 10).map((verb) => (
+                <View key={verb} style={styles.seededBadge}>
+                  <Text style={styles.seededBadgeText}>{verb}</Text>
                 </View>
               ))}
+              {seeding.seededVerbs.length > 10 && (
+                <Text style={styles.moreText}>
+                  +{seeding.seededVerbs.length - 10} more
+                </Text>
+              )}
+            </View>
           </View>
-        </View>
-      )}
+        )}
 
-      {error && <Text style={styles.error}>{error}</Text>}
+        {/* Error State */}
+        {seeding.error && (
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>{seeding.error}</Text>
+            <TouchableOpacity
+              style={[styles.button, styles.secondaryButton]}
+              onPress={() => seedPool('en', 20)}
+            >
+              <Text style={styles.buttonTextSecondary}>Retry</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* Info */}
+        <View style={styles.infoContainer}>
+          <Text style={styles.infoTitle}>Recognition Mode</Text>
+          <Text style={styles.infoText}>
+            You're learning through recognition, not production. Each verb is presented in a
+            natural context. Your brain learns by matching the verb to its meaning.
+          </Text>
+        </View>
+      </View>
     </ScrollView>
   );
 };
@@ -214,85 +184,176 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  seedingContainer: {
     padding: 16,
+    paddingTop: 24,
+  },
+  completionContainer: {
+    padding: 16,
+    paddingTop: 40,
+    alignItems: 'center',
   },
   header: {
     marginBottom: 24,
+    alignItems: 'center',
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     color: '#000',
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 14,
     color: '#666',
-    marginTop: 4,
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 14,
+    color: '#666',
+  },
+  progressSection: {
+    marginBottom: 32,
+  },
+  progressHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  progressLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#000',
+  },
+  progressPercent: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#0066cc',
   },
   progressContainer: {
-    height: 8,
+    height: 10,
     backgroundColor: '#e0e0e0',
-    borderRadius: 4,
-    marginBottom: 24,
+    borderRadius: 5,
     overflow: 'hidden',
+    marginBottom: 8,
   },
   progressBar: {
     height: '100%',
     backgroundColor: '#0066cc',
   },
-  scenarioContainer: {
+  progressText: {
+    fontSize: 12,
+    color: '#666',
+  },
+  seededContainer: {
+    marginBottom: 32,
     backgroundColor: '#f9f9f9',
+    borderRadius: 8,
+    padding: 16,
+  },
+  seededTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#000',
+    marginBottom: 12,
+  },
+  seededList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  seededBadge: {
+    backgroundColor: '#e8f4f8',
+    borderRadius: 16,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+  },
+  seededBadgeText: {
+    fontSize: 12,
+    color: '#0066cc',
+    fontWeight: '500',
+  },
+  moreText: {
+    fontSize: 12,
+    color: '#666',
+    paddingVertical: 6,
+  },
+  errorContainer: {
+    backgroundColor: '#ffebee',
     borderRadius: 8,
     padding: 16,
     marginBottom: 24,
   },
-  verbLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#0066cc',
+  errorText: {
+    color: '#c62828',
+    fontSize: 14,
     marginBottom: 12,
   },
-  scenarioText: {
-    fontSize: 16,
-    color: '#333',
-    lineHeight: 24,
-    marginBottom: 24,
-  },
-  loading: {
-    marginVertical: 16,
-  },
-  actions: {
-    gap: 12,
-  },
-  button: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+  infoContainer: {
+    backgroundColor: '#e3f2fd',
     borderRadius: 8,
-    alignItems: 'center',
+    padding: 16,
   },
-  primaryButton: {
-    backgroundColor: '#0066cc',
-  },
-  secondaryButton: {
-    backgroundColor: '#e0e0e0',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  buttonTextSecondary: {
-    color: '#333',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  completedContainer: {
-    marginTop: 24,
-  },
-  completedTitle: {
+  infoTitle: {
     fontSize: 14,
     fontWeight: '600',
+    color: '#0066cc',
+    marginBottom: 8,
+  },
+  infoText: {
+    fontSize: 13,
+    color: '#1565c0',
+    lineHeight: 20,
+  },
+  completionTitle: {
+    fontSize: 60,
+    marginBottom: 16,
+  },
+  completionHeading: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#000',
+    marginBottom: 8,
+  },
+  completionSubtitle: {
+    fontSize: 16,
     color: '#666',
+    marginBottom: 32,
+    textAlign: 'center',
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    gap: 24,
+    marginBottom: 32,
+  },
+  stat: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  statNumber: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#0066cc',
+  },
+  statLabel: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 4,
+  },
+  verbsContainer: {
+    marginBottom: 32,
+  },
+  verbsTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#000',
     marginBottom: 12,
   },
   verbsList: {
@@ -303,17 +364,35 @@ const styles = StyleSheet.create({
   verbBadge: {
     backgroundColor: '#e8f4f8',
     borderRadius: 16,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
   },
   verbBadgeText: {
-    fontSize: 12,
+    fontSize: 13,
     color: '#0066cc',
     fontWeight: '500',
   },
-  error: {
-    color: '#d32f2f',
-    fontSize: 14,
-    marginTop: 16,
+  button: {
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  primaryButton: {
+    backgroundColor: '#0066cc',
+  },
+  secondaryButton: {
+    backgroundColor: '#e0e0e0',
+    marginTop: 12,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  buttonTextSecondary: {
+    color: '#333',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });

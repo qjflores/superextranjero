@@ -72,6 +72,29 @@ export class APIClient {
     const response = await this.client.get('/health');
     return response.data.data;
   }
+
+  async seedVerbPool(nativeLanguage: string, seedTarget: number = 20): Promise<{
+    seeded_verbs: string[];
+    micro_scenarios_completed: number;
+    mode: 'recognition';
+    pool_ready_for_full: boolean;
+  }> {
+    const response = await this.client.post('/seed-verb-pool', {
+      nativeLanguage,
+      seedTarget,
+    });
+    return response.data.data;
+  }
+
+  async getSeedingStatus(): Promise<{
+    pool_seeded: boolean;
+    seeded_verbs_count: number;
+    completed_scenarios: number;
+    ready_for_full: boolean;
+  }> {
+    const response = await this.client.get('/seed-verb-pool/status');
+    return response.data.data;
+  }
 }
 
 export default new APIClient();

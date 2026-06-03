@@ -7,6 +7,7 @@ import healthRoutes from './routes/health.js';
 import authRoutes from './routes/auth.js';
 import helloRoutes from './routes/hello.js';
 import llmRoutes from './routes/llm.js';
+import seedRoutes from './routes/seed.js';
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use('/health', healthRoutes);
 app.use('/auth', authRoutes);
 app.use('/api', helloRoutes);
 app.use('/', llmRoutes);
+app.use('/', seedRoutes);
 
 // 404 handler
 app.use((_req, res) => {
