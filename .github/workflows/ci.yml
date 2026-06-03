@@ -20,28 +20,30 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: bun install
 
       - name: Lint
-        run: yarn lint
+        run: bun run lint
 
       - name: Format check
-        run: yarn format:check
+        run: bun run format:check
 
       - name: Type check
-        run: yarn type-check
+        run: bun run type-check
 
       - name: Test
-        run: yarn test
+        run: bun run test
 
       - name: Build backend
-        run: yarn workspace @ss/backend build
+        run: cd apps/backend && bun run build
 
-      - name: Build client (web)
-        run: yarn workspace @ss/client build:web
+      - name: Build client
+        run: cd apps/client && bun run build
 
   staging-deployment:
     runs-on: ubuntu-latest
@@ -55,13 +57,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
-          cache: 'yarn'
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: bun install
 
       - name: Build backend
-        run: yarn workspace @ss/backend build
+        run: cd apps/backend && bun run build
 
       - name: Health check
         run: |

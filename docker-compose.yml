@@ -14,7 +14,7 @@ services:
       - JWT_SECRET=dev-secret
     volumes:
       - ./apps/backend/src:/app/apps/backend/src
-    command: yarn workspace @ss/backend dev
+    command: cd apps/backend && bun run dev
 
   # Note: Client is not included here as it requires an emulator/browser
-  # Run locally: yarn workspace @ss/client start
+  # Run locally: cd apps/client && bun start

@@ -5,7 +5,6 @@
   "description": "Data-driven Spanish language learning app for immigrants in Spain",
   "license": "MIT",
   "type": "module",
-  "packageManager": "yarn@4.0.0",
   "workspaces": [
     "apps/client",
     "apps/backend",
@@ -19,9 +18,9 @@
     "type-check": "tsc --noEmit",
     "test": "jest",
     "test:watch": "jest --watch",
-    "dev:backend": "yarn workspace @ss/backend dev",
-    "dev:client": "yarn workspace @ss/client start",
-    "build": "yarn workspaces foreach -t run build",
+    "dev:backend": "cd apps/backend && bun run dev",
+    "dev:client": "cd apps/client && bun start",
+    "build": "bun run --cwd apps/backend build && bun run --cwd apps/client build",
     "clean": "find . -type d -name dist -o -name build -o -name .next | xargs rm -rf"
   },
   "devDependencies": {

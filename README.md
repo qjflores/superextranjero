@@ -9,14 +9,14 @@ Data-driven Spanish language learning app for immigrants in Spain.
 ### Prerequisites
 
 - Node.js 18+ (20+ recommended)
-- Yarn 4.0+
+- Bun 1.0+ ([Install Bun](https://bun.sh))
 - Expo CLI (for client): `npm install -g expo-cli`
 
 ### Setup
 
 ```bash
 # Install dependencies
-yarn install
+bun install
 
 # Copy environment files
 cp apps/backend/.env.example apps/backend/.env
@@ -29,14 +29,14 @@ Run backend and client in separate terminals:
 
 **Terminal 1: Backend**
 ```bash
-yarn dev:backend
+bun run dev:backend
 # Server runs on http://localhost:4000
 # Health check: curl http://localhost:4000/health
 ```
 
 **Terminal 2: Client**
 ```bash
-yarn dev:client
+bun run dev:client
 # Opens Expo DevTools
 # Press 'w' for web, 'i' for iOS simulator, 'a' for Android emulator
 ```
@@ -80,22 +80,22 @@ superextranjero/
 ## Scripts
 
 ### Development
-- `yarn dev:backend` — Start backend dev server (nodemon + tsx)
-- `yarn dev:client` — Start Expo client
+- `bun run dev:backend` — Start backend dev server (tsx watch)
+- `bun run dev:client` — Start Expo client
 
 ### Quality
-- `yarn lint` — Run ESLint on all workspaces
-- `yarn lint:fix` — Fix linting issues
-- `yarn format` — Format code with Prettier
-- `yarn format:check` — Check formatting without changing
-- `yarn type-check` — TypeScript type checking
-- `yarn test` — Run Jest tests
-- `yarn test:watch` — Run tests in watch mode
+- `bun run lint` — Run ESLint on all workspaces
+- `bun run lint:fix` — Fix linting issues
+- `bun run format` — Format code with Prettier
+- `bun run format:check` — Check formatting without changing
+- `bun run type-check` — TypeScript type checking
+- `bun run test` — Run Jest tests
+- `bun run test:watch` — Run tests in watch mode
 
 ### Build
-- `yarn build` — Build all workspaces for production
-- `yarn workspace @ss/backend build` — Build backend only
-- `yarn workspace @ss/client build:web` — Build client web version
+- `bun run build` — Build all workspaces for production
+- `cd apps/backend && bun run build` — Build backend only
+- `cd apps/client && bun run build` — Build client web version
 
 ## Specification & Architecture
 
