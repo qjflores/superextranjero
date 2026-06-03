@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Journeys & Value Flow — Survival Spanish</title>
+<!--
+  ============================================================
+  USER JOURNEYS + VALUE FLOW  ·  Survival Spanish
+  Grounded in: PRD v0.4 (core loop §5, Competency Ladder §5.3,
+  tiered content §4.6) and the Agent Charter (mission, success,
+  non-goals). Journeys are concrete persona walkthroughs; the
+  value-flow model shows how each loop step compounds into the
+  user value the mission promises. USER VALUE ONLY.
+  ============================================================
+-->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,800&family=Spline+Sans+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --ink:#f4ece0; --ink-dim:#b9ad9a; --ink-faint:#7d735f;
+    --bg:#13110d; --bg-raised:#1b1813; --line:#2e2820;
+    --amber:#e8a33d; --amber-soft:#f0c277; --terra:#d2603a;
+    --sage:#9bae7c; --crimson:#c64b3c; --sky:#7fa6c4;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:
+      radial-gradient(120% 80% at 80% -10%, rgba(232,163,61,.10), transparent 55%),
+      radial-gradient(90% 70% at -10% 110%, rgba(210,96,58,.08), transparent 50%),
+      var(--bg);
+    color:var(--ink); font-family:'Fraunces', Georgia, serif; line-height:1.6;
+    -webkit-font-smoothing:antialiased; min-height:100vh; padding:clamp(1.2rem,4vw,4rem);
+  }
+  body::before{
+    content:""; position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.035;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .wrap{position:relative; z-index:1; max-width:900px; margin:0 auto;}
+
+  .masthead{border-bottom:1px solid var(--line); padding-bottom:1.6rem; margin-bottom:3rem; opacity:0; animation:rise .8s ease forwards;}
+  .kicker{font-family:'Spline Sans Mono',monospace; font-size:.72rem; letter-spacing:.32em; text-transform:uppercase; color:var(--amber); margin-bottom:1.4rem; display:flex; gap:.9rem; flex-wrap:wrap; align-items:center;}
+  .kicker .dot{width:6px; height:6px; border-radius:50%; background:var(--terra);}
+  h1{font-size:clamp(2.4rem,6.5vw,4.2rem); font-weight:800; line-height:1; letter-spacing:-.02em; font-optical-sizing:auto;}
+  h1 em{font-style:italic; color:var(--amber-soft); font-weight:500;}
+  .standfirst{margin-top:1.3rem; font-size:clamp(1.02rem,2.2vw,1.28rem); color:var(--ink-dim); max-width:62ch; font-weight:400;}
+  .meta{margin-top:1.5rem; font-family:'Spline Sans Mono',monospace; font-size:.72rem; color:var(--ink-faint); letter-spacing:.04em;}
+
+  section{margin-bottom:3.6rem; opacity:0; animation:rise .8s ease forwards;}
+  section:nth-of-type(1){animation-delay:.1s;} section:nth-of-type(2){animation-delay:.2s;}
+  section:nth-of-type(3){animation-delay:.3s;} section:nth-of-type(4){animation-delay:.4s;}
+  section:nth-of-type(5){animation-delay:.5s;}
+  section:nth-of-type(6){animation-delay:.6s;}
+  section:nth-of-type(7){animation-delay:.7s;}
+  .sec-head{display:flex; align-items:baseline; gap:1rem; margin-bottom:.4rem;}
+  .sec-num{font-family:'Spline Sans Mono',monospace; font-size:.8rem; color:var(--ink-faint); letter-spacing:.1em; padding-top:.35rem;}
+  h2{font-size:clamp(1.4rem,3.4vw,1.95rem); font-weight:600; letter-spacing:-.01em;}
+  h2 .glyph{color:var(--amber); font-style:italic;}
+  .sec-sub{color:var(--ink-faint); font-size:.98rem; margin:0 0 1.6rem 2.8rem; font-style:italic;}
+
+  /* journey card */
+  .journey{background:var(--bg-raised); border:1px solid var(--line); border-radius:14px; padding:1.5rem 1.6rem; margin-bottom:1.4rem; transition:border-color .3s ease;}
+  .journey:hover{border-color:var(--amber);}
+  .j-head{display:flex; align-items:baseline; gap:.8rem; flex-wrap:wrap; margin-bottom:.3rem;}
+  .j-tag{font-family:'Spline Sans Mono',monospace; font-size:.66rem; letter-spacing:.14em; text-transform:uppercase; padding:.22rem .6rem; border-radius:5px; flex-shrink:0;}
+  .j-tag.firstrun{background:rgba(127,166,196,.16); color:var(--sky);}
+  .j-tag.highstakes{background:rgba(198,75,60,.16); color:var(--crimson);}
+  .j-tag.daily{background:rgba(155,174,124,.16); color:var(--sage);}
+  .j-tag.ladder{background:rgba(232,163,61,.16); color:var(--amber);}
+  .j-tag.premission{background:rgba(127,166,196,.16); color:var(--sky);}
+  .j-tag.gap{background:rgba(210,96,58,.18); color:var(--terra);}
+  h3{font-size:1.3rem; font-weight:600; color:var(--ink);}
+  .j-who{font-family:'Spline Sans Mono',monospace; font-size:.74rem; color:var(--ink-faint); margin-bottom:1.1rem; letter-spacing:.02em;}
+
+  .steps{list-style:none; counter-reset:step; border-left:2px dashed var(--line); margin-left:.5rem; padding-left:1.4rem;}
+  .steps li{position:relative; padding:.45rem 0; color:var(--ink-dim); font-size:1.02rem;}
+  .steps li::before{counter-increment:step; content:counter(step); position:absolute; left:-2.32rem; top:.5rem; width:1.4rem; height:1.4rem; background:var(--bg); border:1.5px solid var(--amber); color:var(--amber); border-radius:50%; font-family:'Spline Sans Mono',monospace; font-size:.72rem; display:flex; align-items:center; justify-content:center;}
+  .steps li b{color:var(--ink); font-weight:600;}
+  .steps li .say{font-style:italic; color:var(--amber-soft);}
+
+  .payoff{margin-top:1.2rem; padding:.85rem 1.1rem; background:rgba(155,174,124,.07); border:1px solid rgba(155,174,124,.3); border-radius:9px; font-size:.98rem; color:var(--ink);}
+  .payoff b{color:var(--sage); font-family:'Spline Sans Mono',monospace; font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; display:block; margin-bottom:.25rem;}
+  .rung{font-family:'Spline Sans Mono',monospace; font-size:.72rem; color:var(--amber); margin-top:.7rem; letter-spacing:.04em;}
+
+  .gap-note{margin-top:1.2rem; padding:.95rem 1.15rem; background:rgba(210,96,58,.08); border:1px dashed rgba(210,96,58,.45); border-radius:9px; font-size:.95rem; color:var(--ink-dim);}
+  .gap-note b{color:var(--terra); font-family:'Spline Sans Mono',monospace; font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; display:block; margin-bottom:.3rem;}
+  .gap-note em{color:var(--amber-soft); font-style:italic;}
+
+  /* value flow model */
+  .flow{display:flex; flex-direction:column; gap:0; margin-top:.5rem;}
+  .flow-node{display:flex; gap:1.1rem; align-items:flex-start; padding:1rem 1.2rem; background:var(--bg-raised); border:1px solid var(--line); border-radius:11px; position:relative;}
+  .flow-arrow{align-self:center; color:var(--terra); font-size:1.3rem; margin:.35rem 0; padding-left:1.4rem; font-family:'Spline Sans Mono',monospace;}
+  .flow-node .ico{font-family:'Spline Sans Mono',monospace; font-size:.7rem; letter-spacing:.1em; color:var(--amber); flex-shrink:0; width:5.5rem; padding-top:.15rem; text-transform:uppercase;}
+  .flow-node .what{color:var(--ink); font-weight:600; font-size:1.04rem;}
+  .flow-node .gain{color:var(--ink-dim); font-size:.95rem; display:block; margin-top:.2rem;}
+  .loopback{align-self:center; color:var(--sage); font-family:'Spline Sans Mono',monospace; font-size:.78rem; margin-top:1rem; padding:.7rem 1.1rem; border:1px dashed rgba(155,174,124,.4); border-radius:9px; text-align:center;}
+
+  .principle{font-family:'Spline Sans Mono',monospace; font-size:.82rem; line-height:1.7; background:rgba(232,163,61,.06); border:1px dashed rgba(232,163,61,.35); border-radius:10px; padding:1.1rem 1.3rem; color:var(--amber-soft); margin-top:1.6rem;}
+  .principle b{color:var(--amber);}
+
+  footer{border-top:1px solid var(--line); margin-top:2rem; padding-top:1.4rem; font-family:'Spline Sans Mono',monospace; font-size:.72rem; color:var(--ink-faint); letter-spacing:.04em; display:flex; justify-content:space-between; flex-wrap:wrap; gap:.6rem;}
+
+  @keyframes rise{from{opacity:0; transform:translateY(18px);} to{opacity:1; transform:translateY(0);}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important; opacity:1!important;}}
+  @media(max-width:560px){.flow-node .ico{width:100%;} .flow-node{flex-direction:column; gap:.3rem;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="kicker"><span>User Journeys</span><span class="dot"></span><span>Value Flow</span><span class="dot"></span><span>Survival Spanish</span></div>
+    <h1>From frozen to <em>belonging</em>, one interaction at a time.</h1>
+    <p class="standfirst">Concrete journeys for the persona, each anchored to a rung of the Competency Ladder — including the two users the core loop quietly assumes away: the absolute zero-verb beginner below the floor, and the user too anxious to attempt a mission at all — plus the model showing how every step compounds into real-world value.</p>
+    <p class="meta">GROUNDED IN PRD v0.4 (CORE LOOP §5, LADDER §5.3, TIERED CONTENT §4.6) + AGENT CHARTER · USER VALUE ONLY</p>
+  </header>
+
+  <!-- JOURNEY 1 -->
+  <section>
+    <div class="sec-head"><span class="sec-num">J1</span><h2><span class="glyph">▸</span> First run — the panic moment</h2></div>
+    <p class="sec-sub">The day someone downloads the app because tomorrow terrifies them.</p>
+
+    <div class="journey">
+      <div class="j-head"><span class="j-tag firstrun">First run</span><span class="j-tag daily">Everyday · live path</span><h3>"I have to buy groceries and I freeze at the till."</h3></div>
+      <p class="j-who">Daniela · arrived 9 days ago · zero Spanish · dreads the Mercadona checkout</p>
+      <ol class="steps">
+        <li>Opens the app anxious. Instead of a placement test, she just <b>asks for what she needs</b>: <span class="say">"paying at the supermarket."</span></li>
+        <li>It's an everyday topic, so the runtime <b>generates the scenario live</b> — the real checkout script, including <span class="say">"¿Quieres bolsa?"</span> — no waiting, no warehouse.</li>
+        <li>She drills the 3–4 gating verbs with <b>card/tile assembly</b> first (no keyboard wall), hears native-style audio, sees the rhythm.</li>
+        <li>She gets a <b>Real-World Mission</b>: go buy one thing, decline the bag.</li>
+        <li>At the store she gets through it clutching her phone — and self-grades <b>Rung 1: survived with phone.</b></li>
+      </ol>
+      <div class="payoff"><b>Value she got</b>The terror had a target. She walked in with the exact words the cashier would use — not a textbook sentence — and came out having done it once. The Fragment Trap loosened its grip.</div>
+      <div class="rung">LADDER: 0 → 1 · froze → survived with phone</div>
+    </div>
+  </section>
+
+  <!-- JOURNEY 2 -->
+  <section>
+    <div class="sec-head"><span class="sec-num">J2</span><h2><span class="glyph">▸</span> High-stakes — the appointment that matters</h2></div>
+    <p class="sec-sub">Where getting the phrasing wrong has real consequences — so the app guards it.</p>
+
+    <div class="journey">
+      <div class="j-head"><span class="j-tag highstakes">High-stakes · vetted path</span><h3>"I have a cita at the extranjería on Tuesday."</h3></div>
+      <p class="j-who">Marcus · 6 weeks in · digital-nomad visa · TIE appointment looming</p>
+      <ol class="steps">
+        <li>He asks to rehearse his <b>immigration appointment</b>. The topic flags <b>high-stakes</b>, so it routes to the <b>vetted path</b>, not free generation.</li>
+        <li>The dialogue uses the <b>validated phrasing layer</b> — correct, current bureaucratic terms (<span class="say">cita previa, huella, resguardo</span>), native-reviewed. No hallucinated officialese.</li>
+        <li>He drills the verbs he'll actually need (<i>recoger, presentar, esperar</i>) and rehearses the full exchange with the "funcionario."</li>
+        <li>The runtime throws a <b>curveball</b>: the official asks for a document he didn't expect. He has to improvise.</li>
+        <li>Real appointment: he handles the expected questions solo and copes when one goes off-script. Self-grades <b>Rung 3: handled a curveball.</b></li>
+      </ol>
+      <div class="payoff"><b>Value he got</b>He walked into a consequential, intimidating setting prepared with phrasing he can trust — and didn't collapse when reality deviated from the script. That trust is exactly what the tiered model exists to protect.</div>
+      <div class="rung">LADDER: → 3 · handled a curveball · WERE YOU UNDERSTOOD? understood, repeated once</div>
+    </div>
+  </section>
+
+  <!-- JOURNEY 3 -->
+  <section>
+    <div class="sec-head"><span class="sec-num">J3</span><h2><span class="glyph">▸</span> Daily coach — the same shop, leveling up</h2></div>
+    <p class="sec-sub">The scenario doesn't retire. It becomes a living surface because the interaction recurs in real life.</p>
+
+    <div class="journey">
+      <div class="j-head"><span class="j-tag daily">Daily coach</span><span class="j-tag ladder">Ladder climb</span><h3>"I go to the same panadería every morning."</h3></div>
+      <p class="j-who">Daniela · now week 5 · returning daily · verbs compounding</p>
+      <ol class="steps">
+        <li>The bakery scenario she once "survived" <b>re-serves with less scaffolding</b> — she's now typing the verbs freely, not tapping tiles (scaffold has faded with mastery).</li>
+        <li>Verbs she first learned at the supermarket <b>carry over</b> from the shared mastery pool — <i>querer, dar, pagar</i> already feel automatic.</li>
+        <li>The runtime generates a fresh <b>small-talk variant</b>: the baker comments on the weather, asks how her morning's going.</li>
+        <li>Mission: actually make the small talk, not just transact. She does — a real, unscripted exchange.</li>
+        <li>Self-grades <b>Rung 4: made small talk.</b> The baker now greets her by name.</li>
+      </ol>
+      <div class="payoff"><b>Value she got</b>She stopped dreading the interaction and started enjoying it. Survival became belonging — the top of the ladder, and the reason she keeps opening the app every day.</div>
+      <div class="rung">LADDER: 2 → 4 · survived solo → made small talk · the daily-coach habit forms</div>
+    </div>
+  </section>
+
+  <!-- JOURNEY 5 -->
+  <section>
+    <div class="sec-head"><span class="sec-num">J5</span><h2><span class="glyph">▸</span> Below the floor — the absolute zero-verb beginner</h2></div>
+    <p class="sec-sub">Day one, no Spanish at all. The core loop assumes you can already "drill the gating verbs" — but this person has an empty pool. There's nothing to gate a scenario with yet.</p>
+
+    <div class="journey">
+      <div class="j-head"><span class="j-tag premission">Cold start</span><span class="j-tag ladder">Now in PRD v0.4</span><h3>"I don't know a single verb. Where do I even begin?"</h3></div>
+      <p class="j-who">Tomás · landed yesterday · zero Spanish · can't yet assemble even one scenario</p>
+      <ol class="steps">
+        <li>He opens the app with <b>nothing in the shared verb pool</b>. A full scenario like "grocery checkout" needs 3–4 verbs he doesn't have — the loop can't start where the other journeys start.</li>
+        <li><b>What happens (PRD v0.4 §5.0):</b> he's routed to <b>micro-scenarios</b> — tiny one-verb situations, not abstract drills. <span class="say">querer</span> lives inside <i>"point at the pastry and say you want it"</i>; <span class="say">tener</span> inside <i>"tell them you have a card."</i> Even at the floor, a verb never appears as a naked conjugation table.</li>
+        <li>At true zero, the <b>generation-over-recognition rule relaxes</b>: he meets each verb by <b>recognising</b> it first (hear it, match it, see it in its tiny context) — you can't generate what you've never encountered. Recognition is the on-ramp; it's the rung <i>below</i> the cards on the same scaffold-and-fade ramp.</li>
+        <li>As each micro-scenario is passed, that verb <b>enters the shared pool</b>. The micro-scenarios are authored once (a system-generated corpus), so there's always a tiny situation for the next core verb.</li>
+        <li>After ~15–20 core verbs are seeded, micro-scenarios <b>compose into full ones</b> — and only now does he flow into the standard loop (drill → rehearse → mission) the other journeys describe.</li>
+      </ol>
+      <div class="payoff"><b>Value he got</b>He had a first day that was actually possible. Instead of bouncing off a scenario he had no vocabulary to operate, he built the seed pool through tiny, winnable, situated moments — and arrived at his first real scenario already holding the verbs it needs.</div>
+      <div class="gap-note"><b>Resolved · PRD v0.4 §5.0 + §4.3</b>The loop's step 2 ("drill the gating verbs") presupposed a non-empty pool. PRD v0.4 now defines the cold-start: (1) a <em>micro-scenario seeding phase</em> for the first ~15–20 core verbs (one-verb situations, system-authored once); (2) an explicit <em>recognition rung below the cards</em> in the scaffold-and-fade ladder, framing generation as the <em>destination</em>, not the entry point; (3) a graduation rule for when micro-scenarios compose into full scenarios. Encoded in the <code>seed_verb_pool</code> contract.</div>
+      <div class="rung">LADDER: pre-entry · seeding the pool → first full scenario becomes operable</div>
+    </div>
+  </section>
+
+  <!-- JOURNEY 4 -->
+  <section>
+    <div class="sec-head"><span class="sec-num">J4</span><h2><span class="glyph">▸</span> Not ready — the user who can't face the mission yet</h2></div>
+    <p class="sec-sub">The most fragile and most likely to churn. For them, the real-world mission <em>is</em> the wall — so value has to flow before they ever attempt one.</p>
+
+    <div class="journey">
+      <div class="j-head"><span class="j-tag premission">Pre-mission</span><span class="j-tag ladder">Now in PRD v0.4</span><h3>"I know the words. I still can't make myself walk in."</h3></div>
+      <p class="j-who">Aïcha · 3 weeks in · high anxiety · has rehearsed the café scenario four times but never gone</p>
+      <ol class="steps">
+        <li>She returns to the app daily but <b>keeps re-doing rehearsals</b> instead of taking missions. The "Go do it for real" prompt makes her close the app.</li>
+        <li>She's not failing the language — she's <b>avoiding the exposure</b>. A binary "survived / didn't" mission offers her no safe rung to stand on, so she stalls at the threshold.</li>
+        <li><b>What happens (PRD v0.4 §4.5):</b> the app meets her <em>before</em> the real world. She role-plays the full café exchange <b>with the AI partner</b> as many times as she wants — the partner can fluff its lines, slow down, let her retry with zero stakes.</li>
+        <li>The ladder gains a <b>pre-mission rung — "Rehearsed it confidently"</b> — and the mission screen offers an explicit <em>"Not yet — let me practice once more"</em> instead of only survived/froze. Confidence is allowed to build in private.</li>
+        <li>After several stakes-free reps she chooses, on her own terms, to try the smallest possible real version (order one coffee, nothing else). Only now does she approach <b>Rung 1</b>.</li>
+      </ol>
+      <div class="payoff"><b>Value she got</b>She stayed. The app gave her somewhere to be <i>before</i> she was brave enough for the street — and let her measure progress as growing confidence, not just real-world wins she wasn't ready to attempt. Without this, she'd have churned silently.</div>
+      <div class="gap-note"><b>Resolved · PRD v0.4 §4.5 + §5.3</b>The loop no longer jumps straight from rehearsal to a binary mission. PRD v0.4 adds (1) a <em>"Rehearsed confidently" pre-mission rung below 0</em>, (2) unlimited stakes-free AI role-play as a first-class surface (loop step 3), and (3) a <em>"Not yet"</em> mission option explicitly not scored as failure. Encoded in the <code>rehearse_dialogue</code> (unscored) and <code>grade_mission</code> (<code>not_yet</code>) contracts.</div>
+      <div class="rung">LADDER: pre-0 (rehearsed confidently) → eventually 1 · confidence before exposure</div>
+    </div>
+  </section>
+
+  <!-- VALUE FLOW MODEL -->
+  <section>
+    <div class="sec-head"><span class="sec-num">VF</span><h2><span class="glyph">⟳</span> How value flows</h2></div>
+    <p class="sec-sub">Each step of the loop produces a distinct gain — and the gains compound, not reset.</p>
+
+    <div class="flow">
+      <div class="flow-node"><span class="ico">Seed</span><div><span class="what">If the pool is empty: micro-scenarios seed the first ~15–20 core verbs (recognition-first)</span><span class="gain">→ Gain: a possible first day. Even at zero, verbs arrive inside tiny real situations, never as drills (see J5).</span></div></div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-node"><span class="ico">Ask</span><div><span class="what">User names a real situation they're afraid of</span><span class="gain">→ Gain: relevance. The app starts from <i>their</i> tomorrow, not a syllabus. No friction, no placement test.</span></div></div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-node"><span class="ico">Surface</span><div><span class="what">Runtime serves the scenario — live, or vetted if high-stakes</span><span class="gain">→ Gain: the <i>exact</i> local script (the words the cashier/funcionario will really use), with trust calibrated to the stakes.</span></div></div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-node"><span class="ico">Drill</span><div><span class="what">Gating verbs, scaffold-and-fade (tiles → word-bank → typing)</span><span class="gain">→ Gain: rapid retrieval being built without the keyboard wall. Effort titrated to mastery.</span></div></div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-node"><span class="ico">Rehearse</span><div><span class="what">Full dialogue + native/synth audio, adaptive role-play — repeatable, zero stakes</span><span class="gain">→ Gain: the ear tuned to real Castellano speed, <i>and</i> a safe place to build confidence before exposure. For the most anxious user, this is where value flows first (see J4).</span></div></div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-node"><span class="ico">Mission</span><div><span class="what">Do it for real — or "not yet." Self-grade on the ladder + "Were you understood?"</span><span class="gain">→ Gain: a real-world win banked, <i>or</i> permission to practice once more without it counting as failure. Confidence from doing, on the user's own timeline.</span></div></div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-node"><span class="ico">Level up</span><div><span class="what">Same scenario re-serves with curveballs &amp; small talk</span><span class="gain">→ Gain: a path beyond survival — toward handling the unexpected, and toward belonging.</span></div></div>
+      <div class="loopback">⟲ &nbsp; Mastered verbs flow into the shared pool → the next scenario starts <b>ahead</b>, not from zero. Effort compounds.</div>
+    </div>
+
+    <div class="principle"><b>THE THROUGH-LINE →</b> value is not "lessons completed." It's a ladder of <i>real interactions survived, then mastered, then enjoyed</i> — each one banking confidence and verbs that make the next interaction easier. Frozen → survived → belonging.</div>
+  </section>
+
+  <footer>
+    <span>SURVIVAL SPANISH · USER JOURNEYS &amp; VALUE FLOW · grounded in PRD v0.4 + Charter</span>
+    <span>User value only</span>
+  </footer>
+
+</div>
+</body>
+</html>
