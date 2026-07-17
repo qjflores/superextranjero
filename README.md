@@ -1,2 +1,2 @@
-# superextranjero
-My vibe coded app to learn Spanish - data driven 
+# movilextranjero
+My attempt to teach myself Spanish coded from my phone - data driven 
